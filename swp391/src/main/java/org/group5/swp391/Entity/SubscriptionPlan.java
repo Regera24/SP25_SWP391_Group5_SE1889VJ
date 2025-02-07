@@ -27,5 +27,5 @@ public class SubscriptionPlan {
     double price;
 
     @Column(name = "TimeOfExpiration")
-    int timeOfExpiration;
+    Integer timeOfExpiration;
 }

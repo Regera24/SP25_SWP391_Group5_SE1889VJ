@@ -33,10 +33,5 @@ public class ProductConverter {
         return productDTO;
     }
 
-    public Product toProduct(ProductCreationRequest request) {
-        Product product = modelMapper.map(request, Product.class);
-        Category c = categoryRepository.findByCategoryID(request.getCategoryID());
-        product.setCategory(c);
-        return product;
-    }
+
 }

@@ -13,12 +13,22 @@ import SubscriptionPlans from "./Pages/AdminDashboard/SubscriptionPlans";
 import ProductsList from './Pages/ProductsLayout/ProductsLayout';
 import ZoneList from './Pages/ZoneLayout/Zone';
 import CreateProduct from './Pages/CreateProduct/CreateProduct';
+import Store from "./Pages/ShopOwner/Store";
+import Invoice from "./Pages/ShopOwner/Invoice";
+import Product from "./Pages/ShopOwner/Product";
+import StoreOwnerLayout from "./Components/StoreOwner/Layout";
+
 function App() {
   return (
     <>
       <Routes>
         <Route path="/home" index element={<Home />}></Route>
         <Route path="/home/owner" element={<OwnerLayout />}></Route>
+        <Route path="/home/store-owner" element={<StoreOwnerLayout />}>
+          <Route path="store" element={<Store />}></Route>
+          <Route path="invoice" element={<Invoice />}></Route>
+          <Route path="product" element={<Product />}></Route>
+        </Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/forgot-password" element={<ForgetPassword />}></Route>
         <Route path="/register" element={<Register />}></Route>
@@ -29,8 +39,8 @@ function App() {
         <Route path='/home/owner/products' element={<ProductsList />}> </Route>
         <Route path='/home/owner/ricezone' element={<ZoneList />}></Route>
         <Route path='/home/owner/products/CreateProduct' element={<CreateProduct />}></Route>
-        <Route path='/storehome' element={<StoreHome/>}></Route>
-    </Routes>
+        <Route path='/storehome' element={<StoreHome />}></Route>
+      </Routes>
     </>
   );
 }

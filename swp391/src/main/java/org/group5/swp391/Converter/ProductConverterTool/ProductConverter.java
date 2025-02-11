@@ -1,11 +1,10 @@
 package org.group5.swp391.Converter.ProductConverterTool;
 
 import lombok.RequiredArgsConstructor;
-import org.group5.swp391.DTO.ProductDTOTool.CategoryDTO;
-import org.group5.swp391.DTO.ProductDTOTool.ProductAttributeDTO;
-import org.group5.swp391.DTO.ProductDTOTool.ProductDTO;
-import org.group5.swp391.DTO.ProductDTOTool.ZoneDTO;
+import org.group5.swp391.DTO.ProductDTOTool.*;
+import org.group5.swp391.Entity.Category;
 import org.group5.swp391.Entity.Product;
+import org.group5.swp391.Repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +17,7 @@ public class ProductConverter {
     private final ModelMapper modelMapper;
     private final ProductAttributeConverter productAttributeConverter;
     private final ZoneConverter zoneConverter;
+    private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
 
     public ProductDTO toProductDTO(Product product) {
@@ -31,5 +31,12 @@ public class ProductConverter {
         CategoryDTO cd = categoryConverter.toCategoryDTO(product.getCategory());
         productDTO.setCategoryDTO(cd);
         return productDTO;
+    }
+
+    public Product toProduct(ProductCreationRequest request) {
+        Product product = modelMapper.map(request, Product.class);
+        Category c = categoryRepository.findByCategoryID(request.getCategoryID());
+        product.setCategory(c);
+        return product;
     }
 }

@@ -269,10 +269,26 @@ INSERT INTO Category (CategoryID, Name, Description, StoreID)
 VALUES 
     ('5', N'Gạo Hấp', N'Gạo đã được hấp sẵn, dễ dàng nấu và bảo quản trong thời gian dài.', '1');
 
+IF EXISTS (SELECT 1 FROM Product WHERE ProductID = '1')
+BEGIN
+    UPDATE Product 
+    SET 
+        Name = N'Gạo Jasmine Loại 1', 
+        Price = 20000, 
+        Information = N'Gạo thơm cao cấp, hạt dài, thích hợp cho bữa ăn gia đình.', 
+        Product_image = 'jasmine_1.jpg', 
+        StoreID = '1', 
+        CategoryID = '1'
+    WHERE ProductID = '1'
+END
+ELSE
+BEGIN
+    INSERT INTO Product (ProductID, Name, Price, Information, Product_image, StoreID, CategoryID)
+    VALUES ('1', N'Gạo Jasmine Loại 1', 20000, N'Gạo thơm cao cấp, hạt dài, thích hợp cho bữa ăn gia đình.', 'jasmine_1.jpg', '1', '1')
+END
+
 -- Thêm sản phẩm 1
-INSERT INTO Product (ProductID, Name, Price, Information, Product_image, StoreID, CategoryID)
-VALUES 
-    ('1', N'Gạo Jasmine Loại 1', 20000, N'Gạo thơm cao cấp, hạt dài, thích hợp cho bữa ăn gia đình.', 'jasmine_1.jpg', '1', '1');
+
 
 -- Thêm sản phẩm 2
 INSERT INTO Product (ProductID, Name, Price, Information, Product_image, StoreID, CategoryID)

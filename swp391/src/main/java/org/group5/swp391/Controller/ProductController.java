@@ -1,15 +1,10 @@
 package org.group5.swp391.Controller;
-
 import org.group5.swp391.DTO.ProductDTOTool.ProductDTO;
-
 import org.group5.swp391.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/store")
@@ -20,8 +15,13 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public List<ProductDTO> getAllProducts() {
-        return productService.getAllProducts();
+    public Page<ProductDTO> getAllProducts(@Param("query") String query,
+                                           @RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        if(query == null) return productService.getAllProducts();
+        else {
+            return productService.searchProducts(query, page, size);
+        }
     }
 
 }

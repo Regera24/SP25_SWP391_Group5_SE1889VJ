@@ -1,10 +1,7 @@
 package org.group5.swp391.Entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
@@ -13,7 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -36,15 +34,15 @@ public class Product {
     @Column(name = "ProductImage", nullable = false)
     String productImage;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     @JoinColumn(name = "StoreID")
     Store store;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     @JoinColumn(name = "CategoryID")
     Category category;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name="hasAttribute",
             joinColumns = @JoinColumn(name = "ProductID"),

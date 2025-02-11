@@ -3,6 +3,7 @@ import { Routes, Route} from 'react-router-dom';
 import OwnerLayout from './Components/Layout';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
+import StoreHomeBody from './Components/StoreHomeBody/StoreHomeBody';
 import StoreHome from './Pages/StoreHome';
 
 function App() {

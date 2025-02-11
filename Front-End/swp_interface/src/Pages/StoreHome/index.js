@@ -21,15 +21,10 @@ const StoreHome = () => {
   }, []);
 
   return (
-    <>
-      <HomeHeader />
-      
+    <>      
+      <HomeHeader/>
       <StoreHomeBody products={products} /> {/* Truyền dữ liệu vào component */}
-
       {/* Hiển thị danh sách sản phẩm */}
-      <div>
-        
-      </div>
     </>
   );
 };

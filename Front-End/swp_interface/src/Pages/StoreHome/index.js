@@ -14,8 +14,8 @@ const StoreHome = () => {
         return response.json();
       })
       .then(data => {
-        console.log(data);
-        setProducts(data);
+        console.log(data.content);
+        setProducts(data.content);
       })
       .catch(error => console.error("Lỗi:", error));
   }, []);

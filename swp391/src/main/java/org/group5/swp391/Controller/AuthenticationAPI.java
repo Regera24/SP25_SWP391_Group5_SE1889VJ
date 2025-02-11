@@ -2,7 +2,6 @@ package org.group5.swp391.Controller;
 
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.group5.swp391.DTO.Request.AuthenticationRequest.*;
 import org.group5.swp391.DTO.Response.ApiResponse;
 import org.group5.swp391.DTO.Response.AuthenticationResponse.AuthenticationResponse;
@@ -10,21 +9,22 @@ import org.group5.swp391.DTO.Response.AuthenticationResponse.EmailAndPhoneCheckR
 import org.group5.swp391.DTO.Response.AuthenticationResponse.IntrospectResponse;
 import org.group5.swp391.DTO.Response.AuthenticationResponse.SendOTPResponse;
 import org.group5.swp391.Service.AuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
 @RestController
-@RequiredArgsConstructor
 public class AuthenticationAPI {
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @PostMapping(value = "/login")
-    public ApiResponse<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
+    public ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
         return ApiResponse.<AuthenticationResponse>builder()
-                .code(HttpStatus.OK.value())
+                .code(200)
                 .message("Login successfully")
                 .data(authenticationResponse)
                 .build();
@@ -88,11 +88,22 @@ public class AuthenticationAPI {
                 .build();
     }
 
-    @GetMapping(value = "/change-password")
-    public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+    @PostMapping(value = "/check-otp")
+    public ApiResponse<?> checkOTP(@RequestBody @Valid OTPCheckRequest request) {
+        boolean res = authenticationService.checkOTP(request);
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("check successfully")
+                .data(res)
+                .build();
+    }
 
+    @PostMapping(value = "/change-password")
+    public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        authenticationService.changePassword(request);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
+                .message("Change password successfully")
                 .build();
     }
 

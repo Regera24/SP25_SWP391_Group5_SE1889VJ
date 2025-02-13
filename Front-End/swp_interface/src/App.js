@@ -13,10 +13,11 @@ import SubscriptionPlans from "./Pages/AdminDashboard/SubscriptionPlans";
 import ProductsList from './Pages/ProductsLayout/ProductsLayout';
 import ZoneList from './Pages/ZoneLayout/Zone';
 import CreateProduct from './Pages/CreateProduct/CreateProduct';
-import Store from "./Pages/ShopOwner/Store";
+import Store from "./Pages/ShopOwner/Store/Store";
 import Invoice from "./Pages/ShopOwner/Invoice";
 import Product from "./Pages/ShopOwner/Product";
 import StoreOwnerLayout from "./Components/StoreOwner/Layout";
+import ProuductCard from "./Components/StoreOwner/ProductCard";
 
 function App() {
   return (
@@ -24,10 +25,11 @@ function App() {
       <Routes>
         <Route path="/home" index element={<Home />}></Route>
         <Route path="/home/owner" element={<OwnerLayout />}></Route>
-        <Route path="/home/store-owner" element={<StoreOwnerLayout />}>
+        <Route path="/store-owner" element={<StoreOwnerLayout />}>
           <Route path="store" element={<Store />}></Route>
           <Route path="invoice" element={<Invoice />}></Route>
           <Route path="product" element={<Product />}></Route>
+          <Route path="test" element={<ProuductCard />}></Route>
         </Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/forgot-password" element={<ForgetPassword />}></Route>

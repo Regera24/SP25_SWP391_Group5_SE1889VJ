@@ -6,6 +6,7 @@ import org.group5.swp391.DTO.StoreOwnerDTO.InvoiceDTO;
 import org.group5.swp391.Repository.StoreOwnerRepository.CustomerRepository;
 import org.group5.swp391.Repository.StoreOwnerRepository.InvoiceRepository;
 import org.group5.swp391.Service.StoreOwnerService.InvoiceService;
+import org.springframework.lang.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,15 +22,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public Page<InvoiceDTO> getInvoices(int page, int size, String sortBy, boolean descending) {
+    public Page<InvoiceDTO> getInvoices(String phoneNumber, int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return invoiceRepository.findAll(pageable).map(invoiceConverter::toInvoiceDTO);
-    }
-    @Override
-    public Page<InvoiceDTO> searchInvoices(String phoneNumber, int page, int size, String sortBy, boolean descending) {
-        Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            return invoiceRepository.findAll(pageable).map(invoiceConverter::toInvoiceDTO);
+        }
         return invoiceRepository.findByCustomerIn(customerRepository.findByPhoneNumberContainingIgnoreCase(phoneNumber), pageable).map(invoiceConverter::toInvoiceDTO);
     }
+
 }

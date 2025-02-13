@@ -26,64 +26,34 @@ public class StoreOwnerController {
 
     @GetMapping("/invoices")
     public Page<InvoiceDTO> getInvoices(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "false") boolean descending
-    ) {
-        return invoiceService.getInvoices(page, size, sortBy, descending);
-    }
-
-    @GetMapping("/search-invoices")
-    public Page<InvoiceDTO> searchInvoices(
             @RequestParam String phoneNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean descending
     ) {
-        System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
-        return invoiceService.searchInvoices(phoneNumber, page, size, sortBy, descending);
+        return invoiceService.getInvoices(phoneNumber, page, size, sortBy, descending);
     }
 
     @GetMapping("/stores")
     public Page<StoreDTO> getStores(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "false") boolean descending
-    ) {
-        return storeService.getStores(page, size, sortBy, descending);
-    }
-
-    @GetMapping("/search-stores")
-    public Page<StoreDTO> searchStores(
             @RequestParam String storeName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean descending
     ) {
-        return storeService.searchStores(storeName,page, size, sortBy, descending);
+        return storeService.getStores(storeName, page, size, sortBy, descending);
     }
 
     @GetMapping("/products")
     public Page<ProductDTO> getProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "false") boolean descending
-    ) {
-        return productService.getProducts(page, size, sortBy, descending);
-    }
-    @GetMapping("/search-products")
-    public Page<ProductDTO> searchProducts(
             @RequestParam String productName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "false") boolean descending
     ) {
-        return productService.searchProducts(productName, page, size, sortBy, descending);
+        return productService.getProducts(productName, page, size, sortBy, descending);
     }
 }

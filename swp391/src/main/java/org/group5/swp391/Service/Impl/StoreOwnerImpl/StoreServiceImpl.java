@@ -15,17 +15,14 @@ import org.springframework.stereotype.Service;
 public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
-    @Override
-    public Page<StoreDTO> getStores(int page, int size, String sortBy, boolean descending) {
-        Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return storeRepository.findAll(pageRequest).map(storeConverter::toStoreDTO);
-    }
 
     @Override
-    public Page<StoreDTO> searchStores(String storeName, int page, int size, String sortBy, boolean descending) {
+    public Page<StoreDTO> getStores(String storeName, int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         PageRequest pageRequest = PageRequest.of(page, size, sort);
+        if (storeName == null || storeName.isEmpty()) {
+            return storeRepository.findAll(pageRequest).map(storeConverter::toStoreDTO);
+        }
         return storeRepository.findByStoreNameContainingIgnoreCase(storeName, pageRequest).map(storeConverter::toStoreDTO);
     }
 }

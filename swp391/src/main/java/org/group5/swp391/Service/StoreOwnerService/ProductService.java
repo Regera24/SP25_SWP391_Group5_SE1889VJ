@@ -6,6 +6,5 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProductService {
-    public Page<ProductDTO> getProducts(int page, int size, String sortBy, boolean descending);
-    public Page<ProductDTO> searchProducts(String productName, int page, int size, String sortBy, boolean descending);
+    public Page<ProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending);
 }

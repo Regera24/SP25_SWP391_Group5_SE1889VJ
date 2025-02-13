@@ -23,16 +23,12 @@ public class ProductServiceImpl implements ProductService {
     ProductConverter productConverter;
 
     @Override
-    public Page<ProductDTO> getProducts(int page, int size, String sortBy, boolean descending) {
+    public Page<ProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return productRepository.findAll(pageable).map(productConverter::toProductDTO);
-    }
-
-    @Override
-    public Page<ProductDTO> searchProducts(String productName, int page, int size, String sortBy, boolean descending) {
-        Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        if(productName == null || productName.isEmpty()){
+            productRepository.findAll(pageable).map(productConverter::toProductDTO);
+        }
         return productRepository.findByNameContainingIgnoreCase(productName, pageable).map(productConverter::toProductDTO);
     }
 

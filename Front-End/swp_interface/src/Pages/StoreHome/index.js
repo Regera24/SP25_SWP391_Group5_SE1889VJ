@@ -1,3 +1,4 @@
+import CustomFooter from "../../Components/Footer";
 import HomeHeader from "../../Components/HomeHeader";
 import StoreHomeBody from "../../Components/StoreHomeBody/StoreHomeBody";
 import React, { useEffect, useState } from "react";
@@ -25,6 +26,7 @@ const StoreHome = () => {
       <HomeHeader/>
       <StoreHomeBody products={products} /> {/* Truyền dữ liệu vào component */}
       {/* Hiển thị danh sách sản phẩm */}
+      <CustomFooter/>
     </>
   );
 };

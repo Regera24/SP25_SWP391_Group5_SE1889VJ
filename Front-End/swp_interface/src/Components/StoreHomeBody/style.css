@@ -56,3 +56,7 @@ h5 {
 .search input {
   padding: 0px !important;
 }
+
+.ant-modal-root .ant-modal-mask {
+  background: rgba(0, 0, 0, 0.25) !important;
+}

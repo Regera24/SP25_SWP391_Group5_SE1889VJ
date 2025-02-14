@@ -15,6 +15,4 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 //            "OR p.information LIKE CONCAT('%',:query, '%')")
     Page<Product> searchProducts(String query, Pageable pageable);
 
-//    Iterable<Product> sort(Sort sort);
-
 }

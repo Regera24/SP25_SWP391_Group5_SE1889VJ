@@ -4,6 +4,7 @@ import org.group5.swp391.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,12 +16,12 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public Page<ProductDTO> getAllProducts(@Param("query") String query,
-                                           @RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "10") int size) {
-        if(query == null) return productService.getAllProducts();
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(@Param("query") String query,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "5") int size) {
+        if(query == null) return ResponseEntity.ok(productService.getAllProducts(page, size));
         else {
-            return productService.searchProducts(query, page, size);
+            return ResponseEntity.ok(productService.searchProducts(query, page, size));
         }
     }
 

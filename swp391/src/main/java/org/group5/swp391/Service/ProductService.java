@@ -6,10 +6,7 @@ import org.group5.swp391.Entity.Product;
 import org.group5.swp391.Repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,11 +24,14 @@ public class ProductService {
     @Autowired
     private ProductConverter productConverter;
 
-    public Page<ProductDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
+    public Page<ProductDTO> getAllProducts(int page, int size) {
+
+        Sort sort = Sort.by("price").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Product> products = productRepository.findAll(pageable);
         List<ProductDTO> productDTOS = products.stream().map(productConverter::toProductDTO).collect(Collectors.toList());
 
-        return new PageImpl<>(productDTOS);
+        return new PageImpl<>(productDTOS, pageable, products.getTotalElements());
     }
 
     public Page<ProductDTO> searchProducts(String query, int page, int size) {

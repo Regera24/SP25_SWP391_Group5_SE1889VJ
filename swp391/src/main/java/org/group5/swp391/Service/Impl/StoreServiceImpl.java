@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.group5.swp391.Converter.StoreConverter;
 import org.group5.swp391.DTO.Response.AdminResponse.ViewStoreResponse;
 import org.group5.swp391.DTO.StoreOwnerDTO.StoreInfoDTO;
+import org.group5.swp391.DTO.StoreOwnerDTO.StoreInvoiceDTO;
 import org.group5.swp391.Repository.StoreRepository;
 import org.group5.swp391.Service.StoreService;
 import org.springframework.data.domain.Page;
@@ -20,16 +21,12 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
     @Override
-    public Page<StoreInfoDTO> getStores(int page, int size, String sortBy, boolean descending) {
+    public Page<StoreInfoDTO> getStores(String storeName, int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return storeRepository.findAll(pageRequest).map(storeConverter::toStoreDTO);
-    }
-
-    @Override
-    public Page<StoreInfoDTO> searchStores(String storeName, int page, int size, String sortBy, boolean descending) {
-        Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        if (storeName == null || storeName.isEmpty()) {
+            return storeRepository.findAll(pageRequest).map(storeConverter::toStoreDTO);
+        }
         return storeRepository.findByStoreNameContainingIgnoreCase(storeName, pageRequest).map(storeConverter::toStoreDTO);
     }
 

@@ -138,7 +138,7 @@ const ProductsList = () => {
 
     const fetchProducts = async (page, size) => {
         try {
-            const response = await axios.get('http://localhost:9999/home/owner/products', {
+            const response = await axios.get('http://localhost:9999/employee/products', {
 
                 params: {
                     page: page - 1,
@@ -184,7 +184,7 @@ const ProductsList = () => {
         setPageSizeRelated(5);
 
         try {
-            const response = await axios.get(`http://localhost:9999/home/owner/products/byCategory`, {
+            const response = await axios.get(`http://localhost:9999/employee/products/byCategory`, {
                 params: {
                     categoryID: product.categoryID,
                     page: 0,
@@ -216,7 +216,7 @@ const ProductsList = () => {
     const fetchRelatedProducts = async (categoryID, page, size) => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:9999/home/owner/products/byCategory`, {
+            const response = await axios.get(`http://localhost:9999/employee/products/byCategory`, {
                 params: {
                     categoryID: categoryID,
                     page: page - 1,
@@ -243,7 +243,7 @@ const ProductsList = () => {
 
     const handleSearch = async (page, size) => {
         try {
-            const response = await axios.get('http://localhost:9999/home/owner/products/byCategoryName', {
+            const response = await axios.get('http://localhost:9999/employee/products/byCategoryName', {
                 params: {
                     name: isSearch ? searchTerm : '',
                     page: page - 1,
@@ -263,7 +263,7 @@ const ProductsList = () => {
     const handleSearchRelated = async (categoryID, page, size) => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:9999/home/owner/products/byProductName', {
+            const response = await axios.get('http://localhost:9999/employee/products/byProductName', {
                 params: {
                     name: searchTermRelated,
                     categoryID: categoryID,
@@ -287,7 +287,7 @@ const ProductsList = () => {
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-            <Layout style={{minHeight:'100vh'}}>
+            <Layout style={{ minHeight: '100vh' }}>
                 <Sider
                     style={{
                         backgroundColor: 'white',
@@ -306,14 +306,14 @@ const ProductsList = () => {
                         <Menu.Item
                             key="1"
                             icon={<InsertRowBelowOutlined />}
-                            onClick={() => handleNavigation('/home/owner/products')}
+                            onClick={() => handleNavigation('/employee/products')}
                         >
                             Grain Selection
                         </Menu.Item>
                         <Menu.Item
                             key="2"
                             icon={<ShopOutlined />}
-                            onClick={() => handleNavigation('/home/owner/ricezone')}
+                            onClick={() => handleNavigation('/employee/ricezone')}
                         >
                             Rice Zone
                         </Menu.Item>

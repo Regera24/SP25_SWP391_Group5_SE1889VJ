@@ -31,7 +31,7 @@ const FormDisabledDemo = () => {
 
     useEffect(() => {
         axios
-            .get('http://localhost:9999/home/owner/products/CreateProduct')
+            .get('http://localhost:9999/employee/products/CreateProduct')
             .then((response) => {
                 setCategories(response.data);
             })
@@ -60,7 +60,7 @@ const FormDisabledDemo = () => {
 
 
             const response = await axios.post(
-                'http://localhost:9999/home/owner/products',
+                'http://localhost:9999/employee/products',
                 requestData
             );
 
@@ -204,7 +204,7 @@ const FormDisabledDemo = () => {
                     <Button
                         type="default"
                         htmlType="button"
-                        onClick={() => navigate('/home/owner/products')}
+                        onClick={() => navigate('/employee/products')}
                     >
                         Back
                     </Button>

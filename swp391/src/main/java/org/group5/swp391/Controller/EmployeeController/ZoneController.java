@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/home/owner")
+@RequestMapping("/employee")
 @Data
 public class ZoneController {
 
@@ -20,18 +20,23 @@ public class ZoneController {
 
 
     @GetMapping("/ricezone")
-    public Page<zoneDTO> getFilterZones( @RequestParam("page") int page,@RequestParam("size") int size,
-            @RequestParam(value = "quantityMin", required = false) Integer quantityMin,
-            @RequestParam(value = "quantityMax", required = false) Integer quantityMax,
-            @RequestParam(value = "sizeMin", required = false) Integer sizeMin,
-            @RequestParam(value = "sizeMax", required = false) Integer sizeMax
+    public Page<zoneDTO> getFilterZones(@RequestParam("page") int page, @RequestParam("size") int size,
+                                        @RequestParam(value = "quantityMin", required = false) Integer quantityMin,
+                                        @RequestParam(value = "quantityMax", required = false) Integer quantityMax,
+                                        @RequestParam(value = "sizeMin", required = false) Integer sizeMin,
+                                        @RequestParam(value = "sizeMax", required = false) Integer sizeMax,
+                                        @RequestParam(value = "sortBy", required = false, defaultValue = "size") String sortBy,
+                                        @RequestParam(value = "sortOrder", required = false, defaultValue = "false") boolean sortOrder,
+                                        @RequestParam(value = "search", required = false, defaultValue = "") String search
+
     ) {
-        return zoneService.getFilterZones(page,size,"size",false,quantityMin,quantityMax,sizeMin,sizeMax);
+
+        return zoneService.getFilterZones(page, size, sortBy, sortOrder, quantityMin, quantityMax, sizeMin, sizeMax, search);
     }
 
     @GetMapping("/ricezone/searchzone")
-    public Page<zoneDTO> searchZone(@RequestParam(value = "page") int page,@RequestParam(value = "size") int size,
-            @RequestParam(value = "search", required = false) String search ) {
-        return zoneService.getSearchNameAndLocationZone(page,size,"size",false,search);
+    public Page<zoneDTO> searchZone(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size,
+                                    @RequestParam(value = "search", required = false) String search) {
+        return zoneService.getSearchNameAndLocationZone(page, size, "size", false, search);
     }
 }

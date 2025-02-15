@@ -59,12 +59,16 @@ public class ZoneService {
         return zonePage.map(this::convertToZoneDTO);
     }
 
-    public Page<zoneDTO>getFilterZones(int page,int size, String sortBy, boolean descending,
-                                       Integer quantityMin, Integer quantityMax, Integer sizeMin, Integer sizeMax){
+    public Page<zoneDTO> getFilterZones(int page, int size, String sortBy, boolean descending,
+                                        Integer quantityMin, Integer quantityMax, Integer sizeMin, Integer sizeMax, String search) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-    Page<Zone> zonePage=zoneRepository.findFilteredZones(quantityMin,quantityMax,sizeMin,sizeMax,pageable);
-    return zonePage.map(this::convertToZoneDTO);
+        if (search.equals("")) {
+            search = null;
+        }
+        Page<Zone> zonePage = zoneRepository.findFilteredZones(quantityMin, quantityMax, sizeMin, sizeMax, search, pageable);
+
+        return zonePage.map(this::convertToZoneDTO);
     }
 
     public Page<zoneDTO>getSearchNameAndLocationZone(int page, int size, String sortBy, boolean descending, String search){

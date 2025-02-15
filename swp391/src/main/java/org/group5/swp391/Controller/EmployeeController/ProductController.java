@@ -15,10 +15,9 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/home/owner")
+@RequestMapping("/employee")
 @Data
 public class ProductController {
-
     private final ProductService productService;
     private final CategoryService categoryService;
 

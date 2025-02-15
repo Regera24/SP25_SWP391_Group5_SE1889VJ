@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, message, Input } from 'antd';
 import qs from 'qs';
+import Loading from '../Loading/Loading';
 
 const { Search } = Input;
 
@@ -125,15 +126,12 @@ const Invoice = () => {
     const fetchInvoice = async () => {
         setLoading(true);
         try {
-            const url = searchValue
-                ? `http://localhost:9999/store-owner/search-invoices?phoneNumber=${encodeURIComponent(searchValue)}&${getInvoiceParam(tableParams)}`
-                : `http://localhost:9999/store-owner/invoices?${getInvoiceParam(tableParams)}`;
-
-            const response = await fetch(url);
+            const queryParams = `invoices?phoneNumber=${encodeURIComponent(searchValue)}&` + getInvoiceParam(tableParams);
+            const response = await fetch(`http://localhost:9999/store-owner/${queryParams}`);
             const result = await response.json();
-
-            console.log(result);
-
+            console.log(response);
+            
+    
             setData(result.content || []);
             setTableParams({
                 ...tableParams,
@@ -193,6 +191,7 @@ const Invoice = () => {
                 onChange={handleSearch}
                 enterButton
                 style={{ marginBottom: 16 }}
+                loading={loading}
             />
             <Table
                 columns={columns}

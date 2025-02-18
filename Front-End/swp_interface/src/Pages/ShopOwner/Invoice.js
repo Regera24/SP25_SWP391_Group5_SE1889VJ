@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, message, Input } from 'antd';
+import { Table, message, Input, Modal, Spin } from 'antd';
 import qs from 'qs';
 import Loading from '../Loading/Loading';
+import InvoiceDetailModal from '../../Components/StoreOwner/InvoiceDetailModal/InvoiceDetailModal';
 
 const { Search } = Input;
 
@@ -16,6 +17,10 @@ const Invoice = () => {
             pageSize: 5,
         },
     });
+
+    // State quản lý trạng thái của Modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedInvoiceID, setSelectedInvoiceID] = useState(null); // ID của invoice được chọn
 
     const columns = [
         {
@@ -184,6 +189,18 @@ const Invoice = () => {
         setTimeoutId(newTimeoutId);
     };
 
+    // Hàm xử lý khi bấm vào hàng
+    const onRowClick = (record) => {
+        setSelectedInvoiceID(record.invoiceID); // Lưu ID của invoice được chọn
+        setIsModalOpen(true); // Mở Modal
+    };
+
+    // Hàm đóng Modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedInvoiceID(null); // Xóa ID của invoice sau khi đóng
+    };
+
     return (
         <div>
             <Search
@@ -204,7 +221,21 @@ const Invoice = () => {
                 }}
                 loading={loading}
                 onChange={handleTableChange}
+                onRow={(record) => ({
+                    onClick: () => onRowClick(record),
+                    style: { cursor: 'pointer' }, // Thay đổi con trỏ chuột
+                })}
             />
+
+            {/* Component Modal hiển thị chi tiết hóa đơn */}
+            {isModalOpen && (
+                <InvoiceDetailModal
+                    visible={isModalOpen}
+                    invoiceID={selectedInvoiceID}
+                    onClose={closeModal} // Truyền callback đóng modal
+                />
+            )}
+            
         </div>
     );
 };

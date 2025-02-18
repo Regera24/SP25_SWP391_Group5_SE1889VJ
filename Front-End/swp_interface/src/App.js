@@ -44,7 +44,7 @@ function App() {
             <Route path='/home/owner/products/CreateProduct' element={<CreateProduct />}></Route>
           </Route>
           <Route element={<StoreOwnerProtected />}>
-            <Route path="/home/store-owner" element={<StoreOwnerLayout />}>
+            <Route path="/store-owner" element={<StoreOwnerLayout />}>
               <Route path="store" element={<Store />}></Route>
               <Route path="invoice" element={<Invoice />}></Route>
               <Route path="product" element={<Product />}></Route>

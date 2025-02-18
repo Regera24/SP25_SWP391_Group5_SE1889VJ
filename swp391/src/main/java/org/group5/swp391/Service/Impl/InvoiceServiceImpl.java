@@ -24,8 +24,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         if (phoneNumber == null || phoneNumber.isEmpty()) {
-            return invoiceRepository.findAll(pageable).map(invoiceConverter::toInvoiceDTO);
+            return invoiceRepository.findAll(pageable).map(invoiceConverter::toStoreInvoiceDTO);
         }
-        return invoiceRepository.findByCustomerIn(customerRepository.findByPhoneNumberContainingIgnoreCase(phoneNumber), pageable).map(invoiceConverter::toInvoiceDTO);
+        return invoiceRepository.findByCustomerIn(customerRepository.findByPhoneNumberContainingIgnoreCase(phoneNumber), pageable).map(invoiceConverter::toStoreInvoiceDTO);
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Service
 public interface InvoiceDetailService {
-    public List<StoreInvoiceDetailDTO> getInvoiceDetails(Invoice invoice);
+    public List<StoreInvoiceDetailDTO> getInvoiceDetailsByInvoice(String invoiceId);
 }

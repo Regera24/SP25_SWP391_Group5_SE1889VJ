@@ -31,7 +31,7 @@ const FormDisabledDemo = () => {
 
     useEffect(() => {
         axios
-            .get('http://localhost:9999/employee/products/CreateProduct')
+            .get('http://localhost:9999/employee/products/createproduct')
             .then((response) => {
                 setCategories(response.data);
             })

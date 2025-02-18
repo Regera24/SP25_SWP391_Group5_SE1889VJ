@@ -12,6 +12,7 @@ import {
     ShopOutlined,
     VideoCameraOutlined,
     InsertRowBelowOutlined,
+    TeamOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import { Spin, List as ListItem } from 'antd';
@@ -184,7 +185,7 @@ const ProductsList = () => {
         setPageSizeRelated(5);
 
         try {
-            const response = await axios.get(`http://localhost:9999/employee/products/byCategory`, {
+            const response = await axios.get(`http://localhost:9999/employee/products/bycategory`, {
                 params: {
                     categoryID: product.categoryID,
                     page: 0,
@@ -216,7 +217,7 @@ const ProductsList = () => {
     const fetchRelatedProducts = async (categoryID, page, size) => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:9999/employee/products/byCategory`, {
+            const response = await axios.get(`http://localhost:9999/employee/products/bycategory`, {
                 params: {
                     categoryID: categoryID,
                     page: page - 1,
@@ -243,7 +244,7 @@ const ProductsList = () => {
 
     const handleSearch = async (page, size) => {
         try {
-            const response = await axios.get('http://localhost:9999/employee/products/byCategoryName', {
+            const response = await axios.get('http://localhost:9999/employee/products/bycategoryname', {
                 params: {
                     name: isSearch ? searchTerm : '',
                     page: page - 1,
@@ -263,7 +264,7 @@ const ProductsList = () => {
     const handleSearchRelated = async (categoryID, page, size) => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:9999/employee/products/byProductName', {
+            const response = await axios.get('http://localhost:9999/employee/products/byproductname', {
                 params: {
                     name: searchTermRelated,
                     categoryID: categoryID,
@@ -319,8 +320,8 @@ const ProductsList = () => {
                         </Menu.Item>
                         <Menu.Item
                             key="3"
-                            icon={<UploadOutlined />}
-                            onClick={() => console.log("Customer clicked!")}
+                            icon={<TeamOutlined />}
+                            onClick={() => handleNavigation('/employee/customers')}
                         >
                             Customer
                         </Menu.Item>

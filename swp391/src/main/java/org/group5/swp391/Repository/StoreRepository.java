@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface StoreRepository extends JpaRepository<Store, String> {
     Page<Store> findAll(Pageable pageable);
     Page<Store> findByStoreNameContainingIgnoreCase(String storeName, Pageable pageable);
+    Store findByStoreID(String storeID);
 }

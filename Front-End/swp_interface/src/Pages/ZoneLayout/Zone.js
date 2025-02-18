@@ -14,11 +14,11 @@ import {
     ShopOutlined,
     VideoCameraOutlined,
     InsertRowBelowOutlined,
+    TeamOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import { Spin, List as ListItem } from 'antd';
 import { Button, Layout, Menu, theme, SearchOutlined, Select, Space, Modal } from 'antd';
-
 import CustomFooter from "../../Components/Footer";
 import Search from 'antd/es/transfer/search';
 const { Header, Sider, Content } = Layout;
@@ -114,14 +114,17 @@ const ZoneList = () => {
             title: "Actions",
             key: "actions",
             render: (text, record) => (
-                <Button type="primary" onClick={() =>
-                    showModal(record)}  >
+                <Button type="primary" onClick={() => {
+                    showModal(record);
+                }}
+                >
                     Store
                 </Button>
             ),
         }
 
-    ]; const ZoneIN4columns = [
+    ];
+    const ZoneIN4columns = [
         {
             title: 'STT',
             key: 'stt',
@@ -199,7 +202,7 @@ const ZoneList = () => {
 
     const handleSearchChange = debounce((value) => {
         setSearchTerm(value);
-        setLoading(true)
+        setLoading(true);
         fetchZone(currentPage, pageSize, filters, null, searchTerm);
     }, 1000);
 
@@ -256,10 +259,11 @@ const ZoneList = () => {
     }
 
     const showModal = (zone) => {
-        setModalData(zone.storeDTO ? [zone.storeDTO] : []);
+        setModalData(zone.employeeStoreDTO ? [zone.employeeStoreDTO] : []);
         setSelectedZoneName(zone.name);
         setIsModalVisible(true);
     };
+
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -302,8 +306,8 @@ const ZoneList = () => {
                         </Menu.Item>
                         <Menu.Item
                             key="3"
-                            icon={<UploadOutlined />}
-                            onClick={() => console.log("Customer clicked!")}
+                            icon={<TeamOutlined />}
+                            onClick={() => handleNavigation('/employee/customers')}
                         >
                             Customer
                         </Menu.Item>

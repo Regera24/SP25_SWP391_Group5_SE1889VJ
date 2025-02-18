@@ -24,9 +24,8 @@ public class EmployeeZoneController {
                                                 @RequestParam(value = "sizeMax", required = false) Integer sizeMax,
                                                 @RequestParam(value = "sortBy", required = false, defaultValue = "size") String sortBy,
                                                 @RequestParam(value = "sortOrder", required = false, defaultValue = "false") boolean sortOrder,
-                                                @RequestParam(value = "search", required = false, defaultValue = "") String search
-
-    ) {
+                                                @RequestParam(value = "search", required = false, defaultValue = "") String search )
+    {
         return zoneService.getFilterZones(page, size, sortBy, sortOrder, quantityMin, quantityMax, sizeMin, sizeMax, search);
     }
 

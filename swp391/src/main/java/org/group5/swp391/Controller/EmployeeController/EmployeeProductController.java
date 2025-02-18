@@ -28,25 +28,26 @@ public class EmployeeProductController {
         return categoryService.getAllCategories(page,size,"categoryID",false);
     }
 
-    @GetMapping("/products/byCategoryName")
+    @GetMapping("/products/bycategoryname")
     public Page<EmployeeCategoryDTO> getCategoryByName(@RequestParam("name")String name, @RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
 
         return categoryService.getCategoryBySearch(name,page,size,"categoryID",false);
     }
 
-    @GetMapping("/products/CreateProduct")
-    public List<EmployeeCategoryDTO> getAllCategoriesList() {
+    //dang lam do nhung khong dung phan nen van giu lai cai form
+    @GetMapping("/products/createproduct")
+    public List<EmployeeCategoryDTO> getAllCategoriesListToCreateProduct() {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("/products/byCategory")
+    @GetMapping("/products/bycategory")
     public Page<EmployeeProductDTO> getProductByCateID(@RequestParam("categoryID")String categoryID, @RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
         log.info("categoryID :" + categoryID);
        return productService.getProductsByCateID(categoryID,page,size,"price",false);
     }
-    @GetMapping("/products/byProductName")
+    @GetMapping("/products/byproductname")
     public Page<EmployeeProductDTO> getProductByName(@RequestParam("name")String name, @RequestParam("categoryID")String categoryID, @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {
         log.info("name :" + name);

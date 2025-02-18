@@ -14,39 +14,39 @@ const API = {
     GET_NOTIFICATIONS_BY_ID: (id) => `${API_BASE_URL}/admin/notifications/${id}`,
     MARK_NOTI_AS_READ: `${API_BASE_URL}/notifications/mark-as-read`
   },
-  CUSTOMER:{
+  CUSTOMER: {
     GET_ALL_PRODUCT: `${API_BASE_URL}/store/products`
   },
-  EMPLOYEE:{
-    GET_ALL_CUSTOMER: `${API_BASE_URL}/employee/customers`,
-    UPDATE_USER: (id) => `${API_BASE_URL}/employee/customers/edit/${id}`,
-    CREATE_CUSTOMER: `${API_BASE_URL}/employee/customers/create`,
-    GET_CATEGORY_PAGINATION: `${API_BASE_URL}/employee/categories/pagination`,
+  EMPLOYEE: {
+    GET_ALL_CUSTOMER: `${API_BASE_URL}/employee/customers`,//done 
+    UPDATE_USER: (id) => `${API_BASE_URL}/employee/customers/edit/${id}`,//done
+    CREATE_CUSTOMER: `${API_BASE_URL}/employee/customers/create`,//DONE
+    GET_CATEGORY_PAGINATION: `${API_BASE_URL}/employee/categories/pagination`,//DONE
     GET_ALL_CATEGORY: `${API_BASE_URL}/employee/categories`,
-    GET_CATEGORY_BY_NAME: `${API_BASE_URL}/employee/category`,
-    GET_PRODUCTS_BY_CATEGORY: `${API_BASE_URL}/employee/products-by-category`,
-    GET_PRODUCTS_BY_NAME: `${API_BASE_URL}/employee/products-by-name`,
-    GET_RICEZONE: `${API_BASE_URL}/employee/ricezone`,
-    SEARCH_RICEZONE: `${API_BASE_URL}/employee/ricezone/searchzone`,
+    GET_CATEGORY_BY_NAME: `${API_BASE_URL}/employee/category`,//DONE
+    GET_PRODUCTS_BY_CATEGORY: `${API_BASE_URL}/employee/products-by-category`,//done
+    GET_PRODUCTS_BY_NAME: `${API_BASE_URL}/employee/products-by-name`,//DONE
+    GET_RICEZONE: `${API_BASE_URL}/employee/ricezone`,//donedone
+    SEARCH_RICEZONE: `${API_BASE_URL}/employee/ricezone/searchzone`,//chua dung den vi tich hop vs ricezone luon
   },
-  STORE_OWNER:{
+  STORE_OWNER: {
     GET_INVOICES: `${API_BASE_URL}/store-owner/invoices`,
     GET_INVOICE_DETAIL: `${API_BASE_URL}/store-owner/invoice-details`,
     GET_STORE: `${API_BASE_URL}/store-owner/stores`,
     GET_STORE_PRODUCTS: `${API_BASE_URL}/store-owner/products`
   },
-  AUTH:{
+  AUTH: {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
     CHANGE_PASSWORD: `${API_BASE_URL}/auth/change-password`,
-    LOGOUT:`${API_BASE_URL}/auth/logout`, 
+    LOGOUT: `${API_BASE_URL}/auth/logout`,
     INTROSPECT: `${API_BASE_URL}/auth/introspect`,
-    CHECK_EMAIL_PHONE: `${API_BASE_URL}/auth/check-email-phone`, 
+    CHECK_EMAIL_PHONE: `${API_BASE_URL}/auth/check-email-phone`,
     CHECK_USERNAME: (username) => `${API_BASE_URL}/auth/check-username/${username}`,
-    SEND_OTP:(key) => `${API_BASE_URL}/auth/send-otp/${key}`,
+    SEND_OTP: (key) => `${API_BASE_URL}/auth/send-otp/${key}`,
     CHECK_OTP: `${API_BASE_URL}/auth/check-otp`,
   },
-  PUBLIC:{
+  PUBLIC: {
     UPLOAD_IMG: `${API_BASE_URL}/image`
   }
 };

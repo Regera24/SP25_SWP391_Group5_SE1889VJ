@@ -29,9 +29,9 @@ public class EmployeeZoneController {
         return zoneService.getFilterZones(page, size, sortBy, sortOrder, quantityMin, quantityMax, sizeMin, sizeMax, search);
     }
 
-    @GetMapping("/ricezone/searchzone")
-    public Page<EmployeeZoneDTO> searchZone(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size,
-                                            @RequestParam(value = "search", required = false) String search) {
-        return zoneService.getSearchNameAndLocationZone(page, size, "size", false, search);
-    }
+//    @GetMapping("/ricezone/searchzone")
+//    public Page<EmployeeZoneDTO> searchZone(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size,
+//                                            @RequestParam(value = "search", required = false) String search) {
+//        return zoneService.getSearchNameAndLocationZone(page, size, "size", false, search);
+//    }
 }

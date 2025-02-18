@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Button, Form, Input, InputNumber, message, DatePicker, Select } from 'antd';
-
+import { getToken } from '../../../Utils/UserInfoUtils';
+import API from '../../../Utils/API/API';
 const { TextArea } = Input;
 
 const CustomerIN4Create = () => {
@@ -11,6 +12,7 @@ const CustomerIN4Create = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const customerData = location.state;
+    const token = getToken();
     console.log(customerData);
 
     useEffect(() => {
@@ -42,10 +44,14 @@ const CustomerIN4Create = () => {
                 createdBy: null
             };
 
-
             const response = await axios.post(
-                'http://localhost:9999/employee/customers/create',
-                requestData
+                API.EMPLOYEE.CREATE_CUSTOMER,
+                requestData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Thêm token vào header
+                    },
+                }
             );
 
             console.log("Dữ liệu gửi lên Backend:", requestData);

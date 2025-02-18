@@ -23,7 +23,7 @@ import EmployeeProtected from "./Pages/Protected/EmployeeProtected";
 import StoreOwnerProtected from "./Pages/Protected/StoreOwnerProtected";
 import Employee_CustomerLayout from "./Pages/Employee_CustomerLayout";
 import Employee_Customer from "./Pages/Employee_CustomerLayout";
-import CustomerIN4Edit from "./Pages/Employee_CustomerLayout/components/customeEdit";
+import CustomerIN4Edit from "./Pages/Employee_CustomerLayout/components/customerEdit";
 import CustomerIN4Create from "./Pages/Employee_CustomerLayout/components/customerCreate";
 function App() {
   return (
@@ -33,10 +33,10 @@ function App() {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/forgot-password" element={<ForgetPassword />}></Route>
         <Route path="/register" element={<Register />}></Route>
-        <Route path="/unauthorized" element={<Unauthorized/>}></Route>
-        <Route path='/storehome' element={<StoreHome/>}></Route>
-        <Route element={<CommonProtected/>}>
-          <Route element={<AdminProtected/>}>
+        <Route path="/unauthorized" element={<Unauthorized />}></Route>
+        <Route path='/storehome' element={<StoreHome />}></Route>
+        <Route element={<CommonProtected />}>
+          <Route element={<AdminProtected />}>
             <Route path="/admin" element={<AdminDashboard />}></Route>
             <Route path="/admin/account_owner" element={<AccountOwner />}></Route>
             <Route path="/admin/view_stores" element={<AdminViewStores />}></Route>
@@ -50,7 +50,7 @@ function App() {
             <Route path='/employee/customers' element={<Employee_Customer />}></Route>
             <Route path='/employee/customers/create' element={<CustomerIN4Create />}></Route>
           </Route>
-          <Route element={<StoreOwnerProtected/>}>
+          <Route element={<StoreOwnerProtected />}>
             <Route path="/store-owner" element={<StoreOwnerLayout />}>
               <Route path="store" element={<Store />}></Route>
               <Route path="invoice" element={<Invoice />}></Route>
@@ -58,7 +58,7 @@ function App() {
             </Route>
           </Route>
         </Route>
-    </Routes>
+      </Routes>
     </>
   );
 }

@@ -1,5 +1,6 @@
 import HomeHeader from "../../Components/HomeHeader";
 import StoreHomeBody from "../../Components/StoreHomeBody/StoreHomeBody";
+import Footer from "../../Components/Footer";
 import React, { useEffect, useState } from "react";
 
 const StoreHome = () => {
@@ -26,10 +27,7 @@ const StoreHome = () => {
       
       <StoreHomeBody products={products} /> {/* Truyền dữ liệu vào component */}
 
-      {/* Hiển thị danh sách sản phẩm */}
-      <div>
-        
-      </div>
+      <Footer/>
     </>
   );
 };

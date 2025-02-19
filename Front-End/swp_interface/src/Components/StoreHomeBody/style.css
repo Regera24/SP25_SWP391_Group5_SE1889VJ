@@ -56,3 +56,29 @@ h5 {
 .search input {
   padding: 0px !important;
 }
+
+.ant-modal-root .ant-modal-mask {
+  background: rgba(0, 0, 0, 0.25) !important;
+}
+
+.btn-open {
+  background-color: #198754 !important;
+}
+
+.ant-pagination {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  border-color: #198754 !important;
+}
+
+.price-range {
+  margin-top: 20px;
+}
+
+.footer {
+  margin-top: 100px;
+}

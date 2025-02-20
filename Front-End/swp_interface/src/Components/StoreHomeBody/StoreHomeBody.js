@@ -49,27 +49,24 @@ const StoreHomeBody = ({ products: initialProducts }) => {
   const fetchProducts = async (query = "", page = 1, sortBy = "price", orderBy = "false", minPrice = 0, maxPrice = 1000000) => {
     try {
       let url = `http://localhost:9999/store/products?page=${page - 1}&size=${pageSize}&sortBy=${sortBy}&descending=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
-      
+
       if (query) {
         url += `&query=${encodeURIComponent(query)}`;
       }
-      console.log("Fetching URL:", url);
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         setProducts(data.content);
         setTotalPages(data.totalPages);
         setCurrentPage(data.number + 1);
-        console.log(data);
         scrollToTop();
       } else {
         console.error("Error fetching products!", response.status);
       }
-      
+
     } catch (error) {
       console.error("Error fetching products!", error);
-    }
-  };
+    }};
 
   return (
     <div className="container-all">
@@ -184,7 +181,13 @@ const StoreHomeBody = ({ products: initialProducts }) => {
         </div>
       ))}
 
-      <Pagination current={currentPage} total={totalPages * pageSize} pageSize={pageSize} onChange={(page) => fetchProducts(query, page, sortBy, orderBy, minPrice, maxPrice)} showSizeChanger={false} />
+      <Pagination
+          current={currentPage}
+          total={totalPages * pageSize}
+          pageSize={pageSize}
+          onChange={(page) =>
+              fetchProducts(query, page, sortBy, orderBy, minPrice, maxPrice)}
+          showSizeChanger={false} />
     </div>
   );
 };

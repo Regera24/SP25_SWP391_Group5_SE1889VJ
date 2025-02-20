@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Table, message, Input } from 'antd';
 import qs from 'qs';
+import Loading from '../Loading/Loading';
+import API from '../../Utils/API/API';
+import { getToken } from '../../Utils/UserInfoUtils';
+import { getDataWithToken } from '../../Utils/FetchUtils';
 
 const { Search } = Input;
 
 const Product = () => {
+    const token = getToken();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState("");
@@ -27,7 +32,6 @@ const Product = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            sorter: true, // Bật tính năng sắp xếp
             width: '20%',
         },
         {
@@ -49,7 +53,6 @@ const Product = () => {
             title: 'Category',
             dataIndex: 'categoryName',
             key: 'categoryName',
-            sorter: true, // Bật tính năng sắp xếp
             width: '20%',
         },
     ];
@@ -67,21 +70,14 @@ const Product = () => {
     const fetchInvoice = async () => {
         setLoading(true);
         try {
-            const url = searchValue
-                ? `http://localhost:9999/store-owner/search-products?productName=${encodeURIComponent(searchValue)}&${getProductParam(tableParams)}`
-                : `http://localhost:9999/store-owner/products?${getProductParam(tableParams)}`;
-
-            const response = await fetch(url);
-            const result = await response.json();
-
-            console.log(result);
-
-            setData(result.content || []);
+            const queryParams = `?productName=${encodeURIComponent(searchValue)}&` + getProductParam(tableParams);
+            const response = await getDataWithToken(API.STORE_OWNER.GET_STORE_PRODUCTS + queryParams, token);            
+            setData(response.content || []);
             setTableParams({
                 ...tableParams,
                 pagination: {
                     ...tableParams.pagination,
-                    total: result.totalElements,
+                    total: response.totalElements,
                 },
             });
         } catch (error) {
@@ -135,6 +131,7 @@ const Product = () => {
                 onChange={handleSearch}
                 enterButton
                 style={{ marginBottom: 16 }}
+                loading={loading}
             />
             <Table
                 columns={columns}

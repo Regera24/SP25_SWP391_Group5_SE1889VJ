@@ -2,15 +2,21 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Bell } from "react-bootstrap-icons";
-
+import API from "../../../Utils/API/API.js";
+import { getToken } from "../../../Utils/UserInfoUtils";
 const CustomNavbar = () => {
   const avatarUrl =
     "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";
 
   const [notifications, setNotifications] = useState([]);
+  const token = getToken();
 
   useEffect(() => {
-    fetch("http://localhost:9999/admin/notifications/1")
+    fetch(API.ADMIN.GET_NOTIFICATIONS_BY_ID(1), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data.code === 200) {
@@ -20,44 +26,60 @@ const CustomNavbar = () => {
       .catch((error) => console.error("Error fetching notifications:", error));
   }, []);
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
     const unreadIds = notifications
       .filter((notif) => !notif.isRead)
       .map((notif) => notif.notificationId);
-    fetch("http://localhost:9999/admin/notifications/mark_as_read", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ notificationIDs: unreadIds, isRead: true }),
-    }).then(() => {
-      setNotifications(
-        notifications.map((notif) => ({ ...notif, isRead: true }))
+      try {
+        const response = await fetch(API.ADMIN.MARK_NOTI_AS_READ, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ notificationIDs: unreadIds, isRead: true }),
+        });
+  
+        if (!response.ok) throw new Error("Failed to mark notifications as read");
+  
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notif) => ({ ...notif, isRead: true }))
       );
-    });
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
   };
 
-  const markAsRead = (notificationId) => {
-    fetch("http://localhost:9999/admin/notifications/mark_as_read", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ notificationIDs: [notificationId], isRead: true }),
-    }).then(() => {
-      setNotifications(
-        notifications.map((notif) =>
+  const markAsRead = async (notificationId) => {
+    try {
+      const response = await fetch(API.ADMIN.MARK_NOTI_AS_READ, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          notificationIDs: [notificationId],
+          isRead: true,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to mark notification as read");
+
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notif) =>
           notif.notificationId === notificationId
             ? { ...notif, isRead: true }
             : notif
         )
       );
-    });
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
   };
 
   return (
     <nav className="navbar navbar-dark bg-dark px-3 d-flex justify-content-end">
-      {/* Notifications Dropdown */}
       <div className="dropdown me-3">
         <button
           type="button"
@@ -146,12 +168,12 @@ const CustomNavbar = () => {
           style={{ zIndex: 1050 }}
         >
           <li>
-            <a className="dropdown-item" href="/profile">
+            <a className="dropdown-item" href="#">
               Profile
             </a>
           </li>
           <li>
-            <a className="dropdown-item" href="/settings">
+            <a className="dropdown-item" href="#">
               Settings
             </a>
           </li>
@@ -159,7 +181,7 @@ const CustomNavbar = () => {
             <hr className="dropdown-divider" />
           </li>
           <li>
-            <a className="dropdown-item" href="/logout">
+            <a className="dropdown-item" href="/">
               Logout
             </a>
           </li>

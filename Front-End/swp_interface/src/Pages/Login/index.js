@@ -3,6 +3,7 @@ import { Form, Input, Button, message,Checkbox } from 'antd';
 import { GoogleOutlined, FacebookOutlined, GithubOutlined,UserOutlined} from '@ant-design/icons'
 import { useNavigate  } from 'react-router-dom';
 import { checkLogin } from '../../Utils/FetchUtils';
+import API from '../../Utils/API/API.js';
 import { error, successWSmile} from '../../Utils/AntdNotification';
 function Login(){
   const navigate = useNavigate();
@@ -13,8 +14,8 @@ function Login(){
       username: values.username,
       password: values.password
     }
-    const login = await checkLogin("http://localhost:9999/login", data);
-    if(login && login.code === 200){
+    const login = await checkLogin(API.AUTH.LOGIN, data);
+    if(login && login.code === 200 && login.data.success){
       if(values.remember){
         localStorage.setItem('token',login.data.token)
       }

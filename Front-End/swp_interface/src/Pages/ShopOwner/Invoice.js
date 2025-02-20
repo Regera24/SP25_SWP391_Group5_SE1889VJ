@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Table, message, Input } from 'antd';
+import { Table, message, Input, Modal, Spin } from 'antd';
 import qs from 'qs';
+import Loading from '../Loading/Loading';
+import InvoiceDetailModal from '../../Components/StoreOwner/InvoiceDetailModal/InvoiceDetailModal';
+import {getToken} from '../../Utils/UserInfoUtils'
+import { getDataWithToken } from '../../Utils/FetchUtils';
+import API from '../../Utils/API/API';
 
 const { Search } = Input;
 
 const Invoice = () => {
+    const token = getToken();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState("");
@@ -15,6 +21,9 @@ const Invoice = () => {
             pageSize: 5,
         },
     });
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedInvoiceID, setSelectedInvoiceID] = useState(null); // ID của invoice được chọn
 
     const columns = [
         {
@@ -125,21 +134,15 @@ const Invoice = () => {
     const fetchInvoice = async () => {
         setLoading(true);
         try {
-            const url = searchValue
-                ? `http://localhost:9999/store-owner/search-invoices?phoneNumber=${encodeURIComponent(searchValue)}&${getInvoiceParam(tableParams)}`
-                : `http://localhost:9999/store-owner/invoices?${getInvoiceParam(tableParams)}`;
+            const queryParams = `?phoneNumber=${encodeURIComponent(searchValue)}&` + getInvoiceParam(tableParams);
+            const response = await getDataWithToken(API.STORE_OWNER.GET_INVOICES + queryParams, token);
 
-            const response = await fetch(url);
-            const result = await response.json();
-
-            console.log(result);
-
-            setData(result.content || []);
+            setData(response.content);
             setTableParams({
                 ...tableParams,
                 pagination: {
                     ...tableParams.pagination,
-                    total: result.totalElements,
+                    total: response.totalElements,
                 },
             });
         } catch (error) {
@@ -186,6 +189,17 @@ const Invoice = () => {
         setTimeoutId(newTimeoutId);
     };
 
+    const onRowClick = (record) => {
+        setSelectedInvoiceID(record.invoiceID); // Lưu ID của invoice được chọn
+        setIsModalOpen(true); // Mở Modal
+    };
+
+    // Hàm đóng Modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedInvoiceID(null); // Xóa ID của invoice sau khi đóng
+    };
+
     return (
         <div>
             <Search
@@ -193,6 +207,7 @@ const Invoice = () => {
                 onChange={handleSearch}
                 enterButton
                 style={{ marginBottom: 16 }}
+                loading={loading}
             />
             <Table
                 columns={columns}
@@ -205,7 +220,21 @@ const Invoice = () => {
                 }}
                 loading={loading}
                 onChange={handleTableChange}
+                onRow={(record) => ({
+                    onClick: () => onRowClick(record),
+                    style: { cursor: 'pointer' }, // Thay đổi con trỏ chuột
+                })}
             />
+
+            {/* Component Modal hiển thị chi tiết hóa đơn */}
+            {isModalOpen && (
+                <InvoiceDetailModal
+                    visible={isModalOpen}
+                    invoiceID={selectedInvoiceID}
+                    onClose={closeModal} // Truyền callback đóng modal
+                />
+            )}
+
         </div>
     );
 };

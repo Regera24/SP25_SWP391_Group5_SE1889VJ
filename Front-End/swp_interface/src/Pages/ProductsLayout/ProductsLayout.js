@@ -12,12 +12,15 @@ import {
     ShopOutlined,
     VideoCameraOutlined,
     InsertRowBelowOutlined,
+    TeamOutlined
 } from '@ant-design/icons';
 import axios from 'axios';
 import { Spin, List as ListItem } from 'antd';
 import { Button, Layout, Menu, theme, SearchOutlined, Select, Space, Modal } from 'antd';
 import CustomFooter from "../../Components/Footer";
 import Search from 'antd/es/transfer/search';
+import { getToken } from "../../Utils/UserInfoUtils";
+import API from '../../Utils/API/API';
 const { Header, Sider, Content } = Layout;
 
 const ProductsList = () => {
@@ -26,6 +29,7 @@ const ProductsList = () => {
     const [isSearch, setIsSearch] = useState(false);
 
     const navigate = useNavigate();
+    const token = getToken();
 
     const [loading, setLoading] = useState(true);//true la trang thai dang loading data
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -138,11 +142,13 @@ const ProductsList = () => {
 
     const fetchProducts = async (page, size) => {
         try {
-            const response = await axios.get('http://localhost:9999/home/owner/products', {
-
+            const response = await axios.get(API.EMPLOYEE.GET_CATEGORY_PAGINATION, {
                 params: {
                     page: page - 1,
                     size: size,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`, // Thêm dấu backtick để sử dụng template string
                 },
             });
             console.log("Dữ liệu liên quan22:", response.data);
@@ -184,13 +190,16 @@ const ProductsList = () => {
         setPageSizeRelated(5);
 
         try {
-            const response = await axios.get(`http://localhost:9999/home/owner/products/byCategory`, {
+            const response = await axios.get(API.EMPLOYEE.GET_PRODUCTS_BY_CATEGORY, {
                 params: {
                     categoryID: product.categoryID,
                     page: 0,
                     size: 10,
 
-                }
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`, // Thêm dấu backtick để sử dụng template string
+                },
 
             });
             console.log(product.categoryID)
@@ -216,11 +225,14 @@ const ProductsList = () => {
     const fetchRelatedProducts = async (categoryID, page, size) => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:9999/home/owner/products/byCategory`, {
+            const response = await axios.get(API.EMPLOYEE.GET_PRODUCTS_BY_CATEGORY, {
                 params: {
                     categoryID: categoryID,
                     page: page - 1,
                     size: size,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`, // Thêm dấu backtick để sử dụng template string
                 },
             });
 
@@ -243,12 +255,15 @@ const ProductsList = () => {
 
     const handleSearch = async (page, size) => {
         try {
-            const response = await axios.get('http://localhost:9999/home/owner/products/byCategoryName', {
+            const response = await axios.get(API.EMPLOYEE.GET_CATEGORY_BY_NAME, {
                 params: {
                     name: isSearch ? searchTerm : '',
                     page: page - 1,
                     size: size,
-                }
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`, // Thêm dấu backtick để sử dụng template string
+                },
             });
             console.log("Search response:", response.data);
             setProducts(response.data.content);
@@ -263,13 +278,16 @@ const ProductsList = () => {
     const handleSearchRelated = async (categoryID, page, size) => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:9999/home/owner/products/byProductName', {
+            const response = await axios.get(API.EMPLOYEE.GET_PRODUCTS_BY_NAME, {
                 params: {
                     name: searchTermRelated,
                     categoryID: categoryID,
                     page: page - 1,
                     size: size,
-                }
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`, // Thêm dấu backtick để sử dụng template string
+                },
             });
             console.log("Search response:", response.data);
             setRelatedProducts(response.data.content);
@@ -287,7 +305,7 @@ const ProductsList = () => {
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-            <Layout style={{minHeight:'100vh'}}>
+            <Layout style={{ minHeight: '100vh' }}>
                 <Sider
                     style={{
                         backgroundColor: 'white',
@@ -306,21 +324,21 @@ const ProductsList = () => {
                         <Menu.Item
                             key="1"
                             icon={<InsertRowBelowOutlined />}
-                            onClick={() => handleNavigation('/home/owner/products')}
+                            onClick={() => handleNavigation('/employee/products')}
                         >
                             Grain Selection
                         </Menu.Item>
                         <Menu.Item
                             key="2"
                             icon={<ShopOutlined />}
-                            onClick={() => handleNavigation('/home/owner/ricezone')}
+                            onClick={() => handleNavigation('/employee/ricezone')}
                         >
                             Rice Zone
                         </Menu.Item>
                         <Menu.Item
                             key="3"
                             icon={<UploadOutlined />}
-                            onClick={() => console.log("Customer clicked!")}
+                            onClick={() => handleNavigation('/employee/customers')}
                         >
                             Customer
                         </Menu.Item>
@@ -372,7 +390,7 @@ const ProductsList = () => {
                     >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 15px" }}>
                             <h3><i style={{ marginLeft: 15 }}>Category Product Preview </i></h3>
-                            <span style={{ marginLeft: 840 }}> <DropDown /></span>
+                            {/* <span style={{ marginLeft: 840 }}> <DropDown /></span> */}
                         </div>
 
                         {loading ? (<Spin size="large" />) : (

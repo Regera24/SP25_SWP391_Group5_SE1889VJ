@@ -2,12 +2,12 @@ import HomeHeader from "../../Components/HomeHeader";
 import StoreHomeBody from "../../Components/StoreHomeBody/StoreHomeBody";
 import Footer from "../../Components/Footer";
 import React, { useEffect, useState } from "react";
-
+import API from '../../Utils/API/API.js'
 const StoreHome = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:9999/store/products") 
+    fetch(API.CUSTOMER.GET_ALL_PRODUCT)
       .then(response => {
         if (!response.ok) {
           throw new Error("Lỗi khi lấy dữ liệu từ API");

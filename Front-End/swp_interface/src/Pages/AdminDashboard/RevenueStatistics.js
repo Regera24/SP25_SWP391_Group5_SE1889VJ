@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Table, Form, Pagination } from "react-bootstrap";
 import axios from "axios";
+import API from "../../Utils/API/API.js";
+import { getToken } from "../../Utils/UserInfoUtils";
 
 const RevenueStatistics = ({ setTotalRevenue }) => {
   const [revenueData, setRevenueData] = useState([]);
@@ -11,11 +13,15 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const token = getToken();
 
-  // Fetch dữ liệu từ API
   useEffect(() => {
     axios
-      .get("http://localhost:9999/admin/view_revenue")
+      .get(API.ADMIN.VIEW_REVENUE, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         if (response.data.code === 200) {
           const data = response.data.data;
@@ -34,13 +40,11 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
       .finally(() => setLoading(false));
   }, [setTotalRevenue]);
 
-  // Hàm sắp xếp dữ liệu
   const handleSort = (key) => {
     setSortBy(key);
     setSortOrder(sortBy === key && sortOrder === "asc" ? "desc" : "asc");
   };
 
-  // Lọc dữ liệu theo từ khóa tìm kiếm
   const filteredData = useMemo(() => {
     return revenueData.filter((item) =>
       [item.storeName, item.subcriptionPlanName, item.createdBy].some((field) =>
@@ -49,7 +53,6 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
     );
   }, [revenueData, searchTerm]);
 
-  // Sắp xếp dữ liệu
   const sortedData = useMemo(() => {
     if (!sortBy) return filteredData;
     return [...filteredData].sort((a, b) => {
@@ -64,7 +67,6 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
     });
   }, [filteredData, sortBy, sortOrder]);
 
-  // Tính tổng số trang và lấy dữ liệu của trang hiện tại
   const totalPages = Math.ceil(sortedData.length / recordsPerPage);
   const currentRecords = useMemo(() => {
     return sortedData.slice(
@@ -77,7 +79,6 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
     <div>
       <h3 className="mt-5">Revenue Statistics</h3>
 
-      {/* Thanh tìm kiếm và bộ lọc */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <Form.Control
           type="text"
@@ -105,7 +106,6 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
         </div>
       </div>
 
-      {/* Hiển thị dữ liệu */}
       {loading ? (
         <p>Loading data...</p>
       ) : error ? (
@@ -165,7 +165,6 @@ const RevenueStatistics = ({ setTotalRevenue }) => {
             </tbody>
           </Table>
 
-          {/* Phân trang */}
           <Pagination className="mt-3">
             <Pagination.Prev
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

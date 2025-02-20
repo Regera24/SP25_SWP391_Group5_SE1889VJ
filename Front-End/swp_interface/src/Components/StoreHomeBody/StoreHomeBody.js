@@ -28,44 +28,44 @@ const StoreHomeBody = ({ products: initialProducts }) => {
     const queryParam = searchParams.get("query") || "";
     const pageParam = parseInt(searchParams.get("page")) || 1;
     const sortByParam = searchParams.get("sortBy") || "price";
-    const orderParam = searchParams.get("orderBy") || "false";
+    const orderByParam = searchParams.get("orderBy") || "false";
     const minPriceParam = parseInt(searchParams.get("minPrice")) || 0;
     const maxPriceParam = parseInt(searchParams.get("maxPrice")) || 1000000;
 
     setQuery(queryParam);
     setCurrentPage(pageParam);
     setSortBy(sortByParam);
-    setOrderBy(orderParam);
+    setOrderBy(orderByParam);
     setMinPrice(minPriceParam);
     setMaxPrice(maxPriceParam);
 
-    fetchProducts(queryParam, pageParam, sortByParam, orderParam, minPriceParam, maxPriceParam);
+    fetchProducts(queryParam, pageParam, sortByParam, orderByParam, minPriceParam, maxPriceParam);
   }, [searchParams]);
 
   useEffect(() => {
     fetchProducts(query, currentPage, sortBy, orderBy, minPrice, maxPrice);
-  }, [query, currentPage, sortBy, orderBy, minPrice, maxPrice]);
+  }, []);
 
   const fetchProducts = async (query = "", page = 1, sortBy = "price", orderBy = "false", minPrice = 0, maxPrice = 1000000) => {
     try {
-      let url = `http://localhost:9999/store/products?page=${page - 1}&size=${pageSize}&sortBy=${sortBy}&orderBy=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
-      console.log("Fetching URL:", url);
+      let url = `http://localhost:9999/store/products?page=${page - 1}&size=${pageSize}&sortBy=${sortBy}&descending=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+      
       if (query) {
         url += `&query=${encodeURIComponent(query)}`;
       }
-
+      console.log("Fetching URL:", url);
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         setProducts(data.content);
         setTotalPages(data.totalPages);
         setCurrentPage(data.number + 1);
-
-        navigate(`?query=${encodeURIComponent(query)}&page=${page}&sortBy=${sortBy}&orderBy=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+        console.log(data);
         scrollToTop();
       } else {
         console.error("Error fetching products!", response.status);
       }
+      
     } catch (error) {
       console.error("Error fetching products!", error);
     }
@@ -119,14 +119,13 @@ const StoreHomeBody = ({ products: initialProducts }) => {
                     onChange={(value) => {
                       setOrderBy(value);
                       setTimeout(() => {
-                        fetchProducts(query, 1, value, orderBy, minPrice, maxPrice);
-                      }, 1000);
+                        fetchProducts(query, 1, sortBy, value, minPrice, maxPrice);
+                      }, 100);
                     }}
                     className="w-1/3">
                     <Option value="false">Tăng Dần</Option>
                     <Option value="true">Giảm Dần</Option>
                   </Select>
-                  
                 </td>
               </tr>
             </tbody>

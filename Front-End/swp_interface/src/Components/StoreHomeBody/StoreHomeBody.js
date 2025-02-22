@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input, Table, Modal, Pagination, Flex, Select } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import API from '../../Utils/API/API.js'
 import './style.css';
 
 const StoreHomeBody = ({ products: initialProducts }) => {
@@ -20,27 +21,8 @@ const StoreHomeBody = ({ products: initialProducts }) => {
 
   const { Option } = Select;
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
-
-  useEffect(() => {
-    const queryParam = searchParams.get("query") || "";
-    const pageParam = parseInt(searchParams.get("page")) || 1;
-    const sortByParam = searchParams.get("sortBy") || "price";
-    const orderByParam = searchParams.get("orderBy") || "false";
-    const minPriceParam = parseInt(searchParams.get("minPrice")) || 0;
-    const maxPriceParam = parseInt(searchParams.get("maxPrice")) || 1000000;
-
-    setQuery(queryParam);
-    setCurrentPage(pageParam);
-    setSortBy(sortByParam);
-    setOrderBy(orderByParam);
-    setMinPrice(minPriceParam);
-    setMaxPrice(maxPriceParam);
-
-    fetchProducts(queryParam, pageParam, sortByParam, orderByParam, minPriceParam, maxPriceParam);
-  }, [searchParams]);
 
   useEffect(() => {
     fetchProducts(query, currentPage, sortBy, orderBy, minPrice, maxPrice);
@@ -48,8 +30,8 @@ const StoreHomeBody = ({ products: initialProducts }) => {
 
   const fetchProducts = async (query = "", page = 1, sortBy = "price", orderBy = "false", minPrice = 0, maxPrice = 1000000) => {
     try {
-      let url = `http://localhost:9999/store/products?page=${page - 1}&size=${pageSize}&sortBy=${sortBy}&descending=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
-
+      let url = `${API.CUSTOMER.GET_ALL_PRODUCT}?page=${page - 1}&size=${pageSize}&sortBy=${sortBy}&descending=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+      console.log(url);
       if (query) {
         url += `&query=${encodeURIComponent(query)}`;
       }
@@ -59,6 +41,7 @@ const StoreHomeBody = ({ products: initialProducts }) => {
         setProducts(data.content);
         setTotalPages(data.totalPages);
         setCurrentPage(data.number + 1);
+        navigate(`?query=${encodeURIComponent(query)}&page=${page}&sortBy=${sortBy}&descending=${orderBy}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
         scrollToTop();
       } else {
         console.error("Error fetching products!", response.status);
@@ -77,11 +60,16 @@ const StoreHomeBody = ({ products: initialProducts }) => {
             type="text"
             placeholder="Nhập từ khóa..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && fetchProducts(query, 1, sortBy, orderBy, minPrice, maxPrice)}
+            onChange={(e) => {
+              if (e.target.value === "") {
+                fetchProducts("", 1, sortBy, orderBy, minPrice, maxPrice); 
+              }
+              setQuery(e.target.value);
+              fetchProducts(e.target.value, 1, sortBy, orderBy, minPrice, maxPrice);
+            }}
             className="border p-2 rounded w-full"
           />
-          <Button onClick={() => fetchProducts(query, 1, sortBy, orderBy, minPrice, maxPrice)}>
+          <Button>
             <SearchOutlined />
           </Button>
         </div>
@@ -127,7 +115,6 @@ const StoreHomeBody = ({ products: initialProducts }) => {
               </tr>
             </tbody>
           </table>
-
           <div className="price-range flex gap-2">
             <div>
               Từ
@@ -135,7 +122,10 @@ const StoreHomeBody = ({ products: initialProducts }) => {
                 type="number"
                 placeholder="Giá tối thiểu"
                 value={minPrice}
-                onChange={(e) => setMinPrice(isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value))}
+                onChange={(e) => {
+                  setMinPrice(isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value));
+                  fetchProducts(query, 1, sortBy, orderBy, e.target.value, maxPrice);
+                }}
               />
             </div>
             <div>
@@ -144,7 +134,10 @@ const StoreHomeBody = ({ products: initialProducts }) => {
                 type="number"
                 placeholder="Giá tối đa"
                 value={maxPrice}
-                onChange={(e) => setMaxPrice(isNaN(parseInt(e.target.value)) ? 1000000 : parseInt(e.target.value))}
+                onChange={(e) => {
+                  setMaxPrice(isNaN(parseInt(e.target.value)) ? 1000000 : parseInt(e.target.value));
+                  fetchProducts(query, 1, sortBy, orderBy, minPrice, e.target.value);
+                }}
               />
             </div>
           </div>
@@ -192,4 +185,4 @@ const StoreHomeBody = ({ products: initialProducts }) => {
   );
 };
 
-export default StoreHomeBody;
+export default StoreHomeBody; 

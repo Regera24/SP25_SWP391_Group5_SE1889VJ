@@ -47,12 +47,8 @@ const InvoiceDetailModal = ({ visible, invoiceID, shipMoney, totalMoney, custome
     }, 0);
 
     const handlePrint = () => {
-        const originalContents = document.body.innerHTML;
         const printContents = printRef.current.innerHTML;
-
-        document.body.innerHTML = printContents;
         window.print();
-        document.body.innerHTML = originalContents;
         window.location.reload();
     };
 
@@ -65,9 +61,7 @@ const InvoiceDetailModal = ({ visible, invoiceID, shipMoney, totalMoney, custome
                 <Button key="print" onClick={handlePrint}>
                     In hóa đơn
                 </Button>,
-                <Button key="close" onClick={onClose}>
-                    Đóng
-                </Button>,
+                
             ]}
             width={800}
         >

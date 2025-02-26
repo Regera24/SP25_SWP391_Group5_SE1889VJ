@@ -1,13 +1,14 @@
 import React from "react";
 import './style.scss';
 import { Link } from "react-router-dom";
+import store_img from "../../../assets/img/store_default.jpg";
 
 const StoreCard = ({urlStore, storeName, storeStatus, urlImg}) => {
   return (
     <div className="wrapper">
       <div className="product-img">
         <img
-          src={urlImg}
+          src={store_img}
           alt="Product"
           height="100%"
           width="100%"

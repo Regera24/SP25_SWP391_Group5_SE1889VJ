@@ -3,6 +3,7 @@ import {
   AppstoreOutlined,
   FileDoneOutlined,
   FileTextOutlined,
+  LineChartOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ProductOutlined,
@@ -78,7 +79,7 @@ const StoreOwnerLayout = () => {
               },
               {
                 key: '5',
-                icon: <TeamOutlined />,
+                icon: <LineChartOutlined />,
                 label: <Link to="/store-owner/statistic" style={{ textDecoration: 'none' }}>Statistic</Link>,
               }
             ]}

@@ -3,6 +3,7 @@ import { Modal, Spin, message, Table, Button } from "antd";
 import API from "../../../Utils/API/API";
 import { getToken } from "../../../Utils/UserInfoUtils";
 import { getDataWithToken } from "../../../Utils/FetchUtils";
+import './style.scss';
 
 const InvoiceDetailModal = ({ visible, invoiceID, shipMoney, totalMoney, customerName, customerPhoneNumber, onClose }) => {
     const token = getToken();
@@ -48,9 +49,43 @@ const InvoiceDetailModal = ({ visible, invoiceID, shipMoney, totalMoney, custome
 
     const handlePrint = () => {
         const printContents = printRef.current.innerHTML;
-        window.print();
-        window.location.reload();
+    
+        // Tạo iframe ẩn
+        const iframe = document.createElement("iframe");
+        iframe.style.position = "absolute";
+        iframe.style.width = "0";
+        iframe.style.height = "0";
+        iframe.style.border = "none";
+        document.body.appendChild(iframe);
+    
+        // Ghi nội dung vào iframe
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        @media print {
+                            @page { margin: 0; } /* Loại bỏ margin của trang in */
+                            body { margin: 10mm; } /* Định dạng lề */
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContents}
+                </body>
+            </html>
+        `);
+        doc.close();
+        iframe.contentWindow.print();
+        setTimeout(() => document.body.removeChild(iframe), 1000);
     };
+    
+    
 
     return (
         <Modal

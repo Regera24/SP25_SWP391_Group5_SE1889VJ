@@ -69,24 +69,7 @@ public class ProductServiceImpl implements ProductService {
         return productPage.map(productConverter::toEmployeeProductDTO);
     }
 
-
     // Hieu
-    @Override
-    public Page<CustomerProductDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<CustomerProductDTO> customerProductDTOS = products.stream().map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
-
-        return new PageImpl<>(customerProductDTOS);
-    }
-
-    @Override
-    public Page<CustomerProductDTO> searchProducts(String query, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> products = productRepository.searchProducts(query, pageable);
-        List<CustomerProductDTO> productPages = products.stream().map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
-        return new PageImpl<>(productPages, pageable, products.getTotalElements());
-    }
-
     @Override
     public Page<CustomerProductDTO> searchProductsQuery(String querySearchName, Double minPrice, Double maxPrice, int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
@@ -95,6 +78,4 @@ public class ProductServiceImpl implements ProductService {
         List<CustomerProductDTO> productPages = products.stream().map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
         return new PageImpl<>(productPages, pageable, (products.size() + 1));
     }
-
-
 }

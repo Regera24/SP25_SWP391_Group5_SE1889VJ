@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, Table, Modal, Pagination, Flex, Select } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Input,
+  Table,
+  Modal,
+  Pagination,
+  Flex,
+  Select,
+  Slider,
+  Switch
+} from 'antd';
 import { useNavigate } from 'react-router-dom';
 import API from '../../Utils/API/API.js'
 import './style.css';
@@ -49,75 +58,60 @@ const StoreHomeBody = ({ products: initialProducts }) => {
 
     } catch (error) {
       console.error("Error fetching products!", error);
-    }};
+    }
+  };
 
   return (
     <div className="container-all">
       <div className="p-4">
-        <h2 className="text-xl font-bold mb-2">Tìm kiếm sản phẩm</h2>
         <div className="search flex gap-2 mb-4">
-          <Input
-            type="text"
-            placeholder="Nhập từ khóa..."
-            value={query}
+          <Input.Search
+            size="large"
+            placeholder="Nhập từ khóa"
+            enterButton value={query}
             onChange={(e) => {
               if (e.target.value === "") {
-                fetchProducts("", 1, sortBy, orderBy, minPrice, maxPrice); 
+                fetchProducts("", 1, sortBy, orderBy, minPrice, maxPrice);
               }
               setQuery(e.target.value);
               fetchProducts(e.target.value, 1, sortBy, orderBy, minPrice, maxPrice);
             }}
-            className="border p-2 rounded w-full"
           />
-          <Button>
-            <SearchOutlined />
-          </Button>
         </div>
-
         <div className="filters flex gap-4 mb-4">
-          <table>
-            <tbody>
-              <tr>
-                <td>Xếp theo: </td>
-                <td>
-                  <Select
-                    value={sortBy}
-                    onChange={(value) => {
-                      setSortBy(value);
-                      setTimeout(() => {
-                        fetchProducts(query, 1, value, orderBy, minPrice, maxPrice);
-                      }, 100);
-                    }}
-                    className="w-1/3">
-                    <Option value="price">Giá</Option>
-                    <Option value="name">Tên Sản Phẩm</Option>
-                  </Select>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sắp xếp:
-                </td>
-                <td>
-                  <Select
-                    value={orderBy}
-                    onChange={(value) => {
-                      setOrderBy(value);
-                      setTimeout(() => {
-                        fetchProducts(query, 1, sortBy, value, minPrice, maxPrice);
-                      }, 100);
-                    }}
-                    className="w-1/3">
-                    <Option value="false">Tăng Dần</Option>
-                    <Option value="true">Giảm Dần</Option>
-                  </Select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div>
+            Xếp theo:
+            <Select
+              value={sortBy}
+              onChange={(value) => {
+                setSortBy(value);
+                setTimeout(() => {
+                  fetchProducts(query, 1, value, orderBy, minPrice, maxPrice);
+                }, 100);
+              }}
+              className="w-1/3">
+              <Option value="price">Giá</Option>
+              <Option value="name">Tên Sản Phẩm</Option>
+            </Select>
+          </div>
+          <div>
+            Sắp xếp:
+            <Select
+              value={orderBy}
+              onChange={(value) => {
+                setOrderBy(value);
+                setTimeout(() => {
+                  fetchProducts(query, 1, sortBy, value, minPrice, maxPrice);
+                }, 100);
+              }}
+              className="w-1/3">
+              <Option value="false">Tăng Dần</Option>
+              <Option value="true">Giảm Dần</Option>
+            </Select>
+          </div>
           <div className="price-range flex gap-2">
+            Từ:
             <div>
-              Từ
               <Input
                 type="number"
                 placeholder="Giá tối thiểu"
@@ -128,8 +122,8 @@ const StoreHomeBody = ({ products: initialProducts }) => {
                 }}
               />
             </div>
+            Đến:
             <div>
-              Đến
               <Input
                 type="number"
                 placeholder="Giá tối đa"
@@ -143,44 +137,58 @@ const StoreHomeBody = ({ products: initialProducts }) => {
           </div>
         </div>
       </div>
-
-      {products.map((product) => (
-        <div key={product.productID} className="container mt-5 mb-5">
-          <div className="d-flex justify-content-center row">
-            <div className="col-md-10">
-              <div className="row p-2 bg-white border rounded mt-2">
-                <div className="col-md-3 mt-1">
-                  <img className="img-fluid img-responsive rounded product-image"
-                    src="https://th.bing.com/th/id/OIP.jbXWti_ufkFCWaPna_p79gHaHa?rs=1&pid=ImgDetMain"
-                    alt={product.name} />
-                </div>
-                <div className="col-md-6 mt-1">
-                  <h5>{product.name}</h5>
-                </div>
-                <div className="col-md-3 border-left mt-1">
-                  <h4>{product.price} VNĐ/kg</h4>
-                  <Flex vertical gap="middle" align="flex-start">
-                    <Button type="primary" className="btn-open" onClick={() => {
-                      setSelectedProduct(product);
-                      setOpenResponsive(true);
-                    }}>
-                      Thông tin
-                    </Button>
-                  </Flex>
+      <div className="product-all">
+        {products.map((product) => (
+          <div key={product.productID} className="container-product mt-5 mb-5">
+            <div className="d-flex justify-content-center row">
+              <div className="col-md-10">
+                <div className="row p-2 bg-white border rounded mt-2">
+                  <div className="col-md-3 mt-1">
+                    <img className="img-fluid img-responsive rounded product-image"
+                      src="https://th.bing.com/th/id/OIP.jbXWti_ufkFCWaPna_p79gHaHa?rs=1&pid=ImgDetMain"
+                      alt={product.name} />
+                  </div>
+                  <div className="col-md-6 mt-1">
+                    <h5>{product.name}</h5>
+                  </div>
+                  <div className="col-md-3 border-left mt-1">
+                    <h4>{product.price} VNĐ/kg</h4>
+                    <Flex vertical gap="middle" align="flex-start">
+                      <Button type="primary" className="btn-open" onClick={() => {
+                        setSelectedProduct(product);
+                        setOpenResponsive(true);
+                      }}>
+                        Thông tin
+                      </Button>
+                    </Flex>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      {openResponsive && (
+        <Modal
+          title="Thông tin sản phẩm"
+          visible={openResponsive}
+          onCancel={() => setOpenResponsive(false)}
+          footer={null}
+        >
+          <img className="img-fluid img-responsive rounded product-image" src="https://th.bing.com/th/id/OIP.jbXWti_ufkFCWaPna_p79gHaHa?rs=1&pid=ImgDetMain"></img>
+          <h2>{selectedProduct.name}</h2>
+          <p>Mô tả: {selectedProduct.information}</p>
+          <p>Giá: {selectedProduct.price} VNĐ/kg</p>
+        </Modal>
+      )}
 
       <Pagination
-          current={currentPage}
-          total={totalPages * pageSize}
-          pageSize={pageSize}
-          onChange={(page) =>
-              fetchProducts(query, page, sortBy, orderBy, minPrice, maxPrice)}
-          showSizeChanger={false} />
+        current={currentPage}
+        total={totalPages * pageSize}
+        pageSize={pageSize}
+        onChange={(page) =>
+          fetchProducts(query, page, sortBy, orderBy, minPrice, maxPrice)}
+        showSizeChanger={false} />
     </div>
   );
 };

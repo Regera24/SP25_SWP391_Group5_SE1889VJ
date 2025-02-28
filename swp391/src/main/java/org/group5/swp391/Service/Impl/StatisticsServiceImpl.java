@@ -49,13 +49,11 @@ public class StatisticsServiceImpl implements StatisticsService {
         List<String> storeIds = stores.stream()
                 .map(Store::getStoreID)
                 .toList();
-        boolean isStoreFilterDisabled = storeIds.isEmpty();
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Statistics> statisticsPage = statisticsRepository.findStatisticsByStores(
                 storeIds,
                 storeName,
-                isStoreFilterDisabled,
                 pageable
         );
         return statisticsPage.map(statisticsConverter::toStoreStatisticDTO);

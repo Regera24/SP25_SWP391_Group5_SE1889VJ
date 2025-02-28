@@ -186,8 +186,11 @@ const StoreHomeBody = ({ products: initialProducts }) => {
         current={currentPage}
         total={totalPages * pageSize}
         pageSize={pageSize}
-        onChange={(page) =>
-          fetchProducts(query, page, sortBy, orderBy, minPrice, maxPrice)}
+        onChange={(page) => {
+          fetchProducts(query, page, sortBy, orderBy, minPrice, maxPrice)
+          scrollToTop();
+        }
+        }
         showSizeChanger={false} />
     </div>
   );

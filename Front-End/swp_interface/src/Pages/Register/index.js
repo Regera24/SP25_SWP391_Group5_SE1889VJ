@@ -282,6 +282,10 @@ function Register(){
                     {
                       required: true,
                       message: 'Please input your username!',
+                    },
+                    {
+                      pattern: /^[a-zA-Z0-9]{6,}$/,
+                      message: 'Password must be at least 6 characters and only include alphabets, number!',
                     }
                   ]}
                 >
@@ -296,6 +300,10 @@ function Register(){
                     {
                       required: true,
                       message: 'Please input your password!',
+                    },
+                    {
+                      pattern: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{6,}$/,
+                      message: 'Password must be include at least 6 characters and at least 1 char, 1 num and 1 special!',
                     }
                   ]}
                 >

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.group5.swp391.dto.customer_requirement.CustomerZoneDTO;
 import org.group5.swp391.dto.employee.EmployeeStoreDTO;
 import org.group5.swp391.dto.employee.EmployeeZoneDTO;
+import org.group5.swp391.dto.store_owner.detail_zone.StoreZoneDTO;
 import org.group5.swp391.entity.Zone;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -43,5 +44,13 @@ public class ZoneConverter {
 
         }
         return EmployeeZoneDTO;
+    }
+
+    public StoreZoneDTO toStoreZoneDTO(Zone zone){
+        StoreZoneDTO storeZoneDTO = modelMapper.map(zone, StoreZoneDTO.class);
+        storeZoneDTO.setProductID(zone.getProduct().getProductID());
+        storeZoneDTO.setStoreID(zone.getStore().getStoreID());
+        storeZoneDTO.setProductName(zone.getProduct().getName());
+        return storeZoneDTO;
     }
 }

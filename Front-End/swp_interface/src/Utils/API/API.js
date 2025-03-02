@@ -15,7 +15,8 @@ const API = {
     MARK_NOTI_AS_READ: `${API_BASE_URL}/admin/notifications/mark-as-read`
   },
   CUSTOMER:{
-    GET_ALL_PRODUCT: `${API_BASE_URL}/store/products`
+    GET_ALL_PRODUCT: `${API_BASE_URL}/store/products`,
+    GET_ALL_CATEGORY: `${API_BASE_URL}/store/categories`
   },
   EMPLOYEE:{
     GET_ALL_CUSTOMER: `${API_BASE_URL}/employee/customers`,
@@ -35,7 +36,8 @@ const API = {
     GET_STORE: `${API_BASE_URL}/store-owner/stores`,
     GET_STORE_PRODUCTS: `${API_BASE_URL}/store-owner/products`,
     GET_STORE_EMPLOYEES: `${API_BASE_URL}/store-owner/employees`,
-    GET_STORE_STATISTICs: `${API_BASE_URL}/store-owner/statistics`
+    GET_STORE_STATISTICs: `${API_BASE_URL}/store-owner/statistics`,
+    GET_STORE_ZONES: `${API_BASE_URL}/store-manager/zones`,
   },
   AUTH:{
     LOGIN: `${API_BASE_URL}/auth/login`,

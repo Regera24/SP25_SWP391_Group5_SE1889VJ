@@ -27,6 +27,8 @@ import CustomerIN4Edit from "./Pages/Employee_CustomerLayout/components/customeE
 import CustomerIN4Create from "./Pages/Employee_CustomerLayout/components/customerCreate";
 import Employee from "./Pages/ShopOwner/Employee";
 import Statistic from "./Pages/ShopOwner/Statistic";
+import Zone from "./Pages/StoreManagement/Zone/Zone";
+import StoreLayout from "./Components/StoreLayout/storelayout.js";
 function App() {
   return (
     <>
@@ -59,6 +61,12 @@ function App() {
               <Route path="product" element={<Product />}></Route>
               <Route path="employee" element={<Employee />}></Route>
               <Route path="statistic" element={<Statistic />}></Route>
+            </Route>
+          </Route>
+          <Route element={<StoreOwnerProtected/>}>
+            <Route path="/store" element={<StoreLayout />}>  
+              <Route path=":storeID/zone" element={<Zone />}></Route>
+              <Route path=":store/product" element={<Zone/>}></Route>
             </Route>
           </Route>
         </Route>

@@ -14,4 +14,7 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     Page<Category> findAll(Pageable pageable);
     @Query("SELECT s FROM Category s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Category> findByNameIgnoreCase(String name, Pageable pageable);
+
+    //Hieu
+    Category findByCategoryID(String categoryID);
 }

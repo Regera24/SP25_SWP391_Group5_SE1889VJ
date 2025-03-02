@@ -6,11 +6,13 @@ import org.group5.swp391.dto.customer_requirement.CustomerProductDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
 import org.group5.swp391.dto.store_owner.StoreProductDTO;
 import org.group5.swp391.entity.Account;
+import org.group5.swp391.entity.Category;
 import org.group5.swp391.entity.Product;
 import org.group5.swp391.entity.Store;
 import org.group5.swp391.repository.AccountRepository;
 import org.group5.swp391.repository.ProductRepository;
 import org.group5.swp391.repository.StoreRepository;
+import org.group5.swp391.service.CategoryService;
 import org.group5.swp391.service.ProductService;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductConverter productConverter;
     private final AccountRepository accountRepository;
     private final StoreRepository storeRepository;
+    private final CategoryService categoryService;
 
     // Chien
     @Override
@@ -84,13 +87,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<CustomerProductDTO> searchProductsQuery(String querySearchName, Double minPrice, Double maxPrice, int page, int size, String sortBy, boolean descending) {
+    public Page<CustomerProductDTO> searchProductsQuery(String querySearchName, Double minPrice, Double maxPrice, int page, int size, String sortBy, boolean descending, String categoryID) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        List<Product> products = productRepository.findByNameContainingAndPriceBetween(querySearchName, minPrice, maxPrice, pageable);
-        List<CustomerProductDTO> productPages = products.stream().map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
+        List<Product> products = productRepository
+                .findByNameContainingAndPriceBetween(querySearchName, minPrice, maxPrice, pageable);
+        List<CustomerProductDTO> productPages;
+        if(categoryID != null && !categoryID.isEmpty()){
+            productPages = productRepository.findAllByCategoryId(categoryID).stream()
+                    .map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
+        } else {
+            productPages = products.stream()
+                    .map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
+        }
         return new PageImpl<>(productPages, pageable, (products.size() + 1));
     }
-
-
 }

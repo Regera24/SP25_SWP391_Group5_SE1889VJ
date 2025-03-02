@@ -2,6 +2,8 @@ package org.group5.swp391.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.group5.swp391.converter.CategoryConverter;
+import org.group5.swp391.dto.customer_requirement.CustomerCategoryDTO;
 import org.group5.swp391.dto.employee.EmployeeCategoryDTO;
 import org.group5.swp391.entity.Category;
 import org.group5.swp391.repository.CategoryRepository;
@@ -19,8 +21,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryRepository CategoryRepository;
+    private final CategoryRepository categoryRepository;
     private final ZoneRepository zoneRepository;
+    private final CategoryConverter categoryConverter;
 
     public Long getTotalQuantityByCategoryId(String categoryId) {
         return zoneRepository.findTotalQuantityByCategoryId(categoryId);
@@ -41,22 +44,33 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public List<EmployeeCategoryDTO> getAllCategories() {
-        return CategoryRepository.findAll().stream()
+        return categoryRepository.findAll().stream()
                 .map(this::convertToCategoryDTO)
                 .collect(Collectors.toList());
     }
     public Page<EmployeeCategoryDTO> getAllCategories(int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Category> categoryPage = CategoryRepository.findAll(pageable);
+        Page<Category> categoryPage = categoryRepository.findAll(pageable);
         return categoryPage.map(this::convertToCategoryDTO);
     }
 
     public Page<EmployeeCategoryDTO> getCategoryBySearch(String name, int page, int size, String sortBy, boolean descending){
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Category> categoryPage = CategoryRepository.findByNameIgnoreCase(name, pageable);
+        Page<Category> categoryPage = categoryRepository.findByNameIgnoreCase(name, pageable);
         return categoryPage.map(this::convertToCategoryDTO);
     }
 
+    //Hieu
+    @Override
+    public List<CustomerCategoryDTO> getAllCustomerCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream().map(categoryConverter::toCategoryDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Category getCategoryById(String categoryId) {
+        return categoryRepository.findByCategoryID(categoryId);
+    }
 }

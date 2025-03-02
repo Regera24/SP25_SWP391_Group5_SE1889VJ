@@ -4,13 +4,11 @@ package org.group5.swp391.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.group5.swp391.converter.ZoneConverter;
 import org.group5.swp391.dto.employee.EmployeeZoneDTO;
+import org.group5.swp391.dto.store_owner.detail_zone.StoreZoneDTO;
 import org.group5.swp391.entity.Zone;
 import org.group5.swp391.repository.ZoneRepository;
 import org.group5.swp391.service.ZoneService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,11 +35,25 @@ public class ZoneServiceImpl implements ZoneService {
     return zonePage.map(zoneConverter::toEmployeeZoneDTO);
     }
 
-    public Page<EmployeeZoneDTO>getSearchNameAndLocationZone(int page, int size, String sortBy, boolean descending, String search){
+    public Page<EmployeeZoneDTO>getSearchNameAndLocationZone(int page, int size, String sortBy, boolean descending, String search) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Zone> zonePage=zoneRepository.findByNameAndLocationIgnoreCase(search,pageable);
+        Page<Zone> zonePage = zoneRepository.findByNameAndLocationIgnoreCase(search, pageable);
         return zonePage.map(zoneConverter::toEmployeeZoneDTO);
+    }
+
+    //Hieu
+    @Override
+    public Page<StoreZoneDTO> getStoreZones(String storeID, int page, int size, String sortBy, boolean descending) {
+        if (storeID == null || storeID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Store ID không được để trống");
+        }
+        Sort sort = descending
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Zone> zones = zoneRepository.findZonesByStore_StoreID(storeID, pageable);
+        return zones.map(zoneConverter::toStoreZoneDTO);
     }
 
 }

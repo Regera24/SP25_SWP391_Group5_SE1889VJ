@@ -34,8 +34,11 @@ const API = {
     GET_INVOICE_DETAIL: `${API_BASE_URL}/store-owner/invoice-details`,
     GET_STORE: `${API_BASE_URL}/store-owner/stores`,
     GET_STORE_PRODUCTS: `${API_BASE_URL}/store-owner/products`,
+    GET_STORE_PRODUCT_DETAIL: `${API_BASE_URL}/store-owner/product-detail`,
     GET_STORE_EMPLOYEES: `${API_BASE_URL}/store-owner/employees`,
-    GET_STORE_STATISTICs: `${API_BASE_URL}/store-owner/statistics`
+    GET_STORE_STATISTICs: `${API_BASE_URL}/store-owner/statistics`,
+    GET_CATEGORIES: `${API_BASE_URL}/store-owner/category`,
+    UPDATE_STORE_PRODUCT: `${API_BASE_URL}/store-owner/product/update`
   },
   AUTH:{
     LOGIN: `${API_BASE_URL}/auth/login`,

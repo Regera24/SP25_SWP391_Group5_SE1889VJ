@@ -27,6 +27,7 @@ import CustomerIN4Edit from "./Pages/Employee_CustomerLayout/components/customeE
 import CustomerIN4Create from "./Pages/Employee_CustomerLayout/components/customerCreate";
 import Employee from "./Pages/ShopOwner/Employee/Employee";
 import Statistic from "./Pages/ShopOwner/Statistic/Statistic";
+import ProductUpdate from "./Components/StoreOwner/ProductUpdate/ProductUpdate";
 function App() {
   return (
     <>
@@ -59,6 +60,7 @@ function App() {
               <Route path="product" element={<Product />}></Route>
               <Route path="employee" element={<Employee />}></Route>
               <Route path="statistic" element={<Statistic />}></Route>
+              <Route path="product/update/:productID" element={<ProductUpdate />} />
             </Route>
           </Route>
         </Route>

@@ -8,13 +8,19 @@ import org.group5.swp391.dto.customer_requirement.CustomerZoneDTO;
 import org.group5.swp391.dto.employee.EmployeeCategoryDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
 import org.group5.swp391.dto.employee.EmployeeZoneDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreInfoIdAndNameDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductAttributeDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.group5.swp391.entity.Product;
+import org.group5.swp391.entity.ProductAttribute;
 import org.group5.swp391.entity.Zone;
+import org.group5.swp391.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,6 +30,11 @@ public class ProductConverter {
     private final ProductAttributeConverter productAttributeConverter;
     private final ZoneConverter zoneConverter;
     private final CategoryConverter categoryConverter;
+    private final StoreConverter storeConverter;
+    private final CategoryRepository categoryRepository;
+    private final StoreRepository storeRepository;
+    private final ProductAttributeRepository productAttributeRepository;
+    private final ZoneRepository zoneRepository;
 
     public CustomerProductDTO toCustomerProductDTO(Product product) {
         CustomerProductDTO customerProductDTO = modelMapper.map(product, CustomerProductDTO.class);
@@ -43,8 +54,36 @@ public class ProductConverter {
         StoreProductDTO storeProductDTO = modelMapper.map(product, StoreProductDTO.class);
         storeProductDTO.setCategoryName(product.getCategory().getName());
         storeProductDTO.setProductID(product.getId());
+        storeProductDTO.setStore(product.getStore().getStoreName());
         return storeProductDTO;
     }
+
+    public StoreProductDetailDTO toStoreProductDetailDTO(Product product){
+        StoreProductDetailDTO dto = modelMapper.map(product, StoreProductDetailDTO.class);
+        dto.setCategory(categoryConverter.toStoreCategoryIdAndName(product.getCategory()));
+        dto.setProductID(product.getId());
+        dto.setStore(storeConverter.toStoreInfoIdAndNameDTO(product.getStore()));
+        List<StoreProductAttributeDTO> attributeDTOS = product.getProductAttributes().stream().map(productAttributeConverter::toStoreProductAttributeDTO).toList();
+        dto.setAttributes(attributeDTOS);
+        dto.setQuantity(zoneRepository.getTotalQuantityByProductId(product.getId()));
+        return dto;
+    }
+
+    public void updateProductFromDTO(StoreProductDetailDTO dto, Product product) {
+        modelMapper.map(dto, product);
+        product.setCategory(categoryRepository.findById(dto.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Category not found")));
+        product.setStore(storeRepository.findById(dto.getStore().getId())
+                .orElseThrow(() -> new RuntimeException("Store not found")));
+        List<ProductAttribute> attributes = dto.getAttributes().stream()
+                .map(attrDto -> productAttributeRepository.findById(attrDto.getId())
+                        .orElseThrow(() -> new RuntimeException("Attribute not found: " + attrDto.getId())))
+                .toList();
+        product.setProductAttributes(attributes);
+        List<Zone> zones = zoneRepository.findByProductId(dto.getProductID());
+        product.setZones(zones);
+    }
+
 
     private long calculateTotalQuantityFromZones(Product product) {
         if (product.getZones() == null || product.getZones().isEmpty()) {

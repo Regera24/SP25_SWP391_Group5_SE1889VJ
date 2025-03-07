@@ -1,10 +1,13 @@
 package org.group5.swp391.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.group5.swp391.converter.ProductConverter;
 import org.group5.swp391.dto.customer_requirement.CustomerProductDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.group5.swp391.entity.Account;
 import org.group5.swp391.entity.Product;
 import org.group5.swp391.entity.Store;
@@ -17,7 +20,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,12 +45,33 @@ public class ProductServiceImpl implements ProductService {
         List<Store> stores = storeRepository.findByStoreAccount(account);
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        if(productName == null || productName.isEmpty()){
+        if (productName == null || productName.isEmpty()) {
             productRepository.findAll(pageable).map(productConverter::toStoreProductDTO);
         }
         return productRepository.findByStoreInAndNameContainingIgnoreCase(stores, productName, pageable).map(productConverter::toStoreProductDTO);
     }
 
+    public StoreProductDetailDTO getProduct(String id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        return productConverter.toStoreProductDetailDTO(product);
+    }
+
+    @Transactional
+    public StoreProductDetailDTO updateProduct(String productID, StoreProductDetailDTO productDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String username = authentication.getName();
+        Product existingProduct = productRepository.findProductForUser(username, productID)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        productConverter.updateProductFromDTO(productDTO, existingProduct);
+        existingProduct.setUpdatedAt(LocalDateTime.now());
+        existingProduct.setUpdatedBy(username);
+        productRepository.save(existingProduct);
+        return productConverter.toStoreProductDetailDTO(existingProduct);
+    }
 
     // Minh Tran
 
@@ -58,10 +84,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<EmployeeProductDTO>getProductBySearch(String name, String categoryID, int page, int size, String sortBy, boolean descending){
+    public Page<EmployeeProductDTO> getProductBySearch(String name, String categoryID, int page, int size, String sortBy, boolean descending) {
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Product> productPage = productRepository.findByNameIgnoreCase(name,categoryID, pageable);
+        Page<Product> productPage = productRepository.findByNameIgnoreCase(name, categoryID, pageable);
         return productPage.map(productConverter::toEmployeeProductDTO);
     }
 

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ZoneRepository extends JpaRepository<Zone, Long> {
     @Query("SELECT SUM(z.quantity) FROM Zone z WHERE z.product.category.id = :categoryId")
@@ -31,4 +33,8 @@ public interface ZoneRepository extends JpaRepository<Zone, Long> {
     @Query("SELECT s FROM Zone s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%')) or LOWER(s.location) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Zone> findByNameAndLocationIgnoreCase(String search, Pageable pageable);
 
+    List<Zone> findByProductId(String productId);
+
+    @Query("SELECT COALESCE(SUM(z.quantity), 0) FROM Zone z WHERE z.product.id = :productId")
+    Long getTotalQuantityByProductId(@Param("productId") String productId);
 }

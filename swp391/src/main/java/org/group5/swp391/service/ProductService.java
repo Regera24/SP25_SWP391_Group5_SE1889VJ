@@ -3,12 +3,15 @@ package org.group5.swp391.service;
 import org.group5.swp391.dto.customer_requirement.CustomerProductDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface ProductService {
+    public StoreProductDetailDTO updateProduct(String productID, StoreProductDetailDTO productDTO);
     public Page<StoreProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending);
+    public StoreProductDetailDTO getProduct(String id);
     public Page<EmployeeProductDTO> getProductsByCateID(String CateID, int page, int size, String sortBy, boolean descending);
     public Page<EmployeeProductDTO>getProductBySearch(String name, String categoryID, int page, int size, String sortBy, boolean descending);
     public Page<CustomerProductDTO> getAllProducts();

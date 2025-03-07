@@ -4,15 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.group5.swp391.dto.store_owner.all_employee.StoreEmployeeDTO;
 import org.group5.swp391.dto.store_owner.all_invoice.StoreInvoiceDTO;
 import org.group5.swp391.dto.store_owner.all_invoice.StoreInvoiceDetailDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreCategoryIdAndName;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.group5.swp391.dto.store_owner.all_statistic.StoreStatisticDTO;
 import org.group5.swp391.dto.store_owner.all_store.StoreInfoDTO;
 import org.group5.swp391.service.*;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class StoreOwnerController {
     private final InvoiceDetailService invoiceDetailService;
     private final EmployeeService employeeService;
     private final StatisticsService statisticsService;
+    private final CategoryService categoryService;
 
     @GetMapping("/invoices")
     public Page<StoreInvoiceDTO> getInvoices(
@@ -67,6 +69,30 @@ public class StoreOwnerController {
         return productService.getProducts(productName, page, size, sortBy, descending);
     }
 
+    @GetMapping("/product-detail")
+    public StoreProductDetailDTO getProduct(@RequestParam String id) {
+        return productService.getProduct(id);
+    }
+
+    @GetMapping("/category")
+    public List<StoreCategoryIdAndName> getCategory() {
+        return categoryService.getAllStoreCategories();
+    }
+
+    @PutMapping("/product/update/{id}")
+    public ResponseEntity<StoreProductDetailDTO> updateProduct(
+            @PathVariable String id,
+            @RequestBody StoreProductDetailDTO product) {
+        if (!id.equals(product.getProductID())) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        StoreProductDetailDTO updatedProduct = productService.updateProduct(id, product);
+        if (updatedProduct == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        return ResponseEntity.ok(updatedProduct);
+    }
+
     @GetMapping("/employees")
     public Page<StoreEmployeeDTO> getEmployees(
             @RequestParam(defaultValue = "") String employeeName,
@@ -78,6 +104,7 @@ public class StoreOwnerController {
     ) {
         return employeeService.getEmployees(employeeName, page, size, sortBy, descending, gender);
     }
+
     @GetMapping("/statistics")
     public Page<StoreStatisticDTO> getStatistics(
             @RequestParam String storeName,

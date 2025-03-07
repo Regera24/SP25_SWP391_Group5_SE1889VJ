@@ -14,4 +14,5 @@ public class StoreProductDTO {
     double price;
     String information;
     String categoryName;
+    String store;
 }

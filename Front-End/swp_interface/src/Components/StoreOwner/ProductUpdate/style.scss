@@ -1,0 +1,15 @@
+.update-product-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.update-product-card {
+    width: 500px;
+}
+
+.update-product-actions {
+    display: flex;
+    justify-content: space-between;
+}

@@ -2,6 +2,7 @@ package org.group5.swp391.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.group5.swp391.dto.customer_requirement.CustomerProductAttributeDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductAttributeDTO;
 import org.group5.swp391.entity.ProductAttribute;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -17,4 +18,7 @@ public class ProductAttributeConverter {
         return dto;
     }
 
+    public StoreProductAttributeDTO toStoreProductAttributeDTO(ProductAttribute productAttribute) {
+        return modelMapper.map(productAttribute, StoreProductAttributeDTO.class);
+    }
 }

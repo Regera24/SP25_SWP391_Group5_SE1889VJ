@@ -6,6 +6,7 @@ import './style.scss';
 import { getToken } from '../../../Utils/UserInfoUtils';
 import API from '../../../Utils/API/API';
 import { getDataWithToken } from '../../../Utils/FetchUtils';
+import store_default from '../../../assets/img/store_default.jpg'
 
 const { Search } = Input;
 
@@ -100,7 +101,7 @@ const Store = () => {
                             urlStore={`/store/${store.storeID}`} // Đường dẫn
                             storeName={store.storeName} // Tên cửa hàng
                             storeStatus={store.status === 'ACTIVE' ? 'Active' : 'Inactive'} // Trạng thái
-                            urlImg={store.imageUrl || 'https://via.placeholder.com/150'} // Ảnh mặc định nếu không có ảnh
+                            urlImg={store.imageUrl || store_default} // Ảnh mặc định nếu không có ảnh
                         />
                     ))}
                 </div>

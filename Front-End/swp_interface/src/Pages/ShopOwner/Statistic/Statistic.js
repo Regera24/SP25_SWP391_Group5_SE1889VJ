@@ -62,7 +62,7 @@ const Statistic = () => {
             title: 'Total Money',
             dataIndex: 'totalMoney',
             key: 'totalMoney',
-            render: (totalMoney) => `${totalMoney.toFixed(3)} đ`,
+            render: (totalMoney) => `${totalMoney.toLocaleString()} đ`,
             sorter: true,
             width: '15%',
         },
@@ -72,6 +72,10 @@ const Statistic = () => {
             key: 'createdAt',
             sorter: true,
             width: '20%',
+            render: (createdBy) => {
+                const date = new Date(createdBy); 
+                return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
         },
         {
             title: 'Created By',

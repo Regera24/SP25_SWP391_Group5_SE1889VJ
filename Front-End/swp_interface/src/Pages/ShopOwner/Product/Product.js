@@ -55,7 +55,7 @@ const Product = () => {
             dataIndex: 'price',
             key: 'price',
             sorter: true,
-            render: (price) => `${price.toFixed(3)} đ`,
+            render: (price) => `${price.toLocaleString()} đ`,
             width: '10%',
         },
         {
@@ -69,7 +69,13 @@ const Product = () => {
             title: 'Category',
             dataIndex: 'categoryName',
             key: 'categoryName',
-            width: '20%',
+            width: '15%',
+        },
+        {
+            title: 'Store',
+            dataIndex: 'store',
+            key: 'storeName',
+            width: '15%',
         },
     ];
 

@@ -27,6 +27,10 @@ import CustomerIN4Edit from "./Pages/Employee_CustomerLayout/components/customeE
 import CustomerIN4Create from "./Pages/Employee_CustomerLayout/components/customerCreate";
 import Employee from "./Pages/ShopOwner/Employee";
 import Statistic from "./Pages/ShopOwner/Statistic";
+import Zone from "./Pages/StoreManagement/Zone/Zone.js";
+import StoreLayout from "./Components/StoreLayout/storelayout.js";
+import CreateZone from "./Pages/StoreManagement/Zone/CreateZone.js";
+import UpdateZone from "./Pages/StoreManagement/Zone/UpdateZone.js";
 function App() {
   return (
     <>
@@ -36,7 +40,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgetPassword />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/unauthorized" element={<Unauthorized/>}></Route>
-        <Route path='/storehome' element={<StoreHome/>}></Route>
+        <Route path='/storehome' element={<StoreHome />}></Route>
         <Route element={<CommonProtected/>}>
           <Route element={<AdminProtected/>}>
             <Route path="/admin" element={<AdminDashboard />}></Route>
@@ -59,6 +63,14 @@ function App() {
               <Route path="product" element={<Product />}></Route>
               <Route path="employee" element={<Employee />}></Route>
               <Route path="statistic" element={<Statistic />}></Route>
+            </Route>
+          </Route>
+          <Route element={<StoreOwnerProtected/>}>
+            <Route path="/store/:id" element={<StoreLayout />}>  
+              <Route path="zone" element={<Zone />}></Route>
+              <Route path="zone/createzone" element={<CreateZone />} />
+              <Route path="zone/updatezone/:zoneID" element={<UpdateZone />} />
+              <Route path="product" element={<Zone/>}></Route>
             </Route>
           </Route>
         </Route>

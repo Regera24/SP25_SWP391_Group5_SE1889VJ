@@ -6,6 +6,8 @@ import org.group5.swp391.dto.store_owner.StoreProductDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface ProductService {
     public Page<StoreProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending);
@@ -13,5 +15,7 @@ public interface ProductService {
     public Page<EmployeeProductDTO>getProductBySearch(String name, String categoryID, int page, int size, String sortBy, boolean descending);
     public Page<CustomerProductDTO> getAllProducts();
     public Page<CustomerProductDTO> searchProducts(String query, int page, int size);
-    public Page<CustomerProductDTO> searchProductsQuery(String querySearchName, Double minPrice, Double maxPrice, int page, int size, String sortBy, boolean descending);
+    public List<CustomerProductDTO> getAllProductsByStoreID(String storeID);
+    public Page<CustomerProductDTO> searchProductsQuery(String querySearchName, Double minPrice, Double maxPrice, int page, int size, String sortBy, boolean descending, String categoryID);
+    public void addProduct(String storeID, CustomerProductDTO customerProductDTO) throws Exception;
 }

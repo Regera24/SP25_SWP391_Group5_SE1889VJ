@@ -318,5 +318,11 @@ SET created_by = 1;
 UPDATE debt
 SET created_by = 1;
 
+update account
+set gender = 'true'
+where id like '3'
 
+update account
+set gender = 'false'
+where id like '4'
 

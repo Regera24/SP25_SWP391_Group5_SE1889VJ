@@ -14,10 +14,11 @@ const API = {
     GET_NOTIFICATIONS_BY_ID: (id) => `${API_BASE_URL}/admin/notifications/${id}`,
     MARK_NOTI_AS_READ: `${API_BASE_URL}/admin/notifications/mark-as-read`
   },
-  CUSTOMER:{
-    GET_ALL_PRODUCT: `${API_BASE_URL}/store/products`
+  CUSTOMER: {
+    GET_ALL_PRODUCT: `${API_BASE_URL}/store/products`,
+    GET_ALL_CATEGORY: `${API_BASE_URL}/store/categories`
   },
-  EMPLOYEE:{
+  EMPLOYEE: {
     GET_ALL_CUSTOMER: `${API_BASE_URL}/employee/customers`,
     UPDATE_USER: (id) => `${API_BASE_URL}/employee/customers/edit/${id}`,
     CREATE_CUSTOMER: `${API_BASE_URL}/employee/customers/create`,
@@ -29,13 +30,19 @@ const API = {
     GET_RICEZONE: `${API_BASE_URL}/employee/ricezone`,
     SEARCH_RICEZONE: `${API_BASE_URL}/employee/ricezone/searchzone`,
   },
-  STORE_OWNER:{
+  STORE_OWNER: {
     GET_INVOICES: `${API_BASE_URL}/store-owner/invoices`,
     GET_INVOICE_DETAIL: `${API_BASE_URL}/store-owner/invoice-details`,
     GET_STORE: `${API_BASE_URL}/store-owner/stores`,
     GET_STORE_PRODUCTS: `${API_BASE_URL}/store-owner/products`,
     GET_STORE_EMPLOYEES: `${API_BASE_URL}/store-owner/employees`,
-    GET_STORE_STATISTICs: `${API_BASE_URL}/store-owner/statistics`
+    GET_STORE_STATISTICs: `${API_BASE_URL}/store-owner/statistics`,
+  },
+  STORE_DETAIL: {
+    GET_STORE_ZONES: `${API_BASE_URL}/store-detail/zones`,
+    GET_STORE_PRODUCTS_BY_STOREID: `${API_BASE_URL}/store-detail/products`,
+    UPDATE_STORE_ZONE: (id) => `${API_BASE_URL}/store-detail/zones/${id}`,
+    GET_ZONE_ID: `${API_BASE_URL}/store-detail/get-zone`,
   },
   AUTH:{
     LOGIN: `${API_BASE_URL}/auth/login`,

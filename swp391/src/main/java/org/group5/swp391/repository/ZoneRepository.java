@@ -1,5 +1,6 @@
 package org.group5.swp391.repository;
 
+import org.group5.swp391.dto.store_owner.detail_zone.StoreZoneDTO;
 import org.group5.swp391.entity.Zone;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,12 @@ public interface ZoneRepository extends JpaRepository<Zone, Long> {
     @Query("SELECT s FROM Zone s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%')) or LOWER(s.location) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Zone> findByNameAndLocationIgnoreCase(String search, Pageable pageable);
 
+    @Query("SELECT z FROM Zone z WHERE z.store.id = :storeID")
+    Page<Zone> findZonesByStore_StoreID(String storeID, Pageable pageable);
+    @Query("SELECT z FROM Zone z WHERE z.store.id = :storeID AND z.name LIKE %:name%")
+    Page<Zone> findZoneByNameContainsIgnoreCase(String storeID, String name, Pageable pageable);
+
+    Zone findZoneById(String id);
+
+    Zone getZoneById(String id);
 }

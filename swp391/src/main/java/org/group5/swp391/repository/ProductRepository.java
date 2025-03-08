@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Repository("storeOwnerProductRepository")
 public interface ProductRepository extends JpaRepository<Product, String> {
+    //Chien
     Page<Product> findAll(Pageable pageable);
     Page<Product> findByStoreInAndNameContainingIgnoreCase(Collection<Store> stores, String name, Pageable pageable);
     Optional<Product> findById(String id);
@@ -25,6 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     AND p.id = :productId
 """)
     Optional<Product> findProductForUser(@Param("username") String username, @Param("productId") String productId);
+
 
     @Query("Select s from Product  s where s.category.id = ?1")
     List<Product> findAllByCategoryId(String categoryId);

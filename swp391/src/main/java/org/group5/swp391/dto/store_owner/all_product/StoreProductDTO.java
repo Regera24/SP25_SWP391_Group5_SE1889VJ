@@ -15,4 +15,5 @@ public class StoreProductDTO {
     String information;
     String categoryName;
     String store;
+    Long quantity;
 }

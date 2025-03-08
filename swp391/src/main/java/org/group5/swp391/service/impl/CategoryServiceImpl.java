@@ -70,7 +70,6 @@ public class CategoryServiceImpl implements CategoryService {
             return null;
         }
         String username = authentication.getName();
-        System.out.println("Test" + categoryRepository.findCategoriesForUser(username).get(0));
         return categoryRepository.findCategoriesForUser(username).stream().map(categoryConverter::toStoreCategoryIdAndName).collect(Collectors.toList());
     }
 }

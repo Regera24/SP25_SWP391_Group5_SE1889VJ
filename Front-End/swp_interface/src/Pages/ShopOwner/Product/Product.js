@@ -77,6 +77,13 @@ const Product = () => {
             key: 'storeName',
             width: '15%',
         },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+            render: (quantity) => `${quantity.toLocaleString()} kg`,
+            width: '15%',
+        },
     ];
 
     const getProductParam = (params) => {

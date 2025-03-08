@@ -8,7 +8,6 @@ import org.group5.swp391.dto.customer_requirement.CustomerZoneDTO;
 import org.group5.swp391.dto.employee.EmployeeCategoryDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
 import org.group5.swp391.dto.employee.EmployeeZoneDTO;
-import org.group5.swp391.dto.store_owner.all_product.StoreInfoIdAndNameDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductAttributeDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
@@ -20,7 +19,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -55,6 +53,7 @@ public class ProductConverter {
         storeProductDTO.setCategoryName(product.getCategory().getName());
         storeProductDTO.setProductID(product.getId());
         storeProductDTO.setStore(product.getStore().getStoreName());
+        storeProductDTO.setQuantity(zoneRepository.getTotalQuantityByProductId(product.getId()));
         return storeProductDTO;
     }
 
@@ -68,22 +67,6 @@ public class ProductConverter {
         dto.setQuantity(zoneRepository.getTotalQuantityByProductId(product.getId()));
         return dto;
     }
-
-    public void updateProductFromDTO(StoreProductDetailDTO dto, Product product) {
-        modelMapper.map(dto, product);
-        product.setCategory(categoryRepository.findById(dto.getCategory().getId())
-                .orElseThrow(() -> new RuntimeException("Category not found")));
-        product.setStore(storeRepository.findById(dto.getStore().getId())
-                .orElseThrow(() -> new RuntimeException("Store not found")));
-        List<ProductAttribute> attributes = dto.getAttributes().stream()
-                .map(attrDto -> productAttributeRepository.findById(attrDto.getId())
-                        .orElseThrow(() -> new RuntimeException("Attribute not found: " + attrDto.getId())))
-                .toList();
-        product.setProductAttributes(attributes);
-        List<Zone> zones = zoneRepository.findByProductId(dto.getProductID());
-        product.setZones(zones);
-    }
-
 
     private long calculateTotalQuantityFromZones(Product product) {
         if (product.getZones() == null || product.getZones().isEmpty()) {

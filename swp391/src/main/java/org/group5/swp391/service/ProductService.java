@@ -6,10 +6,11 @@ import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public interface ProductService {
-    public StoreProductDetailDTO updateProduct(String productID, StoreProductDetailDTO productDTO);
+    public StoreProductDetailDTO updateStoreProduct(String productID, StoreProductDetailDTO dto, MultipartFile file);
     public Page<StoreProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending);
     public StoreProductDetailDTO getProduct(String id);
     public Page<EmployeeProductDTO> getProductsByCateID(String CateID, int page, int size, String sortBy, boolean descending);

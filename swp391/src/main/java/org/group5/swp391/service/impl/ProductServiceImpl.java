@@ -6,23 +6,21 @@ import lombok.RequiredArgsConstructor;
 import org.group5.swp391.converter.ProductConverter;
 import org.group5.swp391.dto.customer_requirement.CustomerProductDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductAttributeDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
-import org.group5.swp391.entity.Account;
-import org.group5.swp391.entity.Product;
-import org.group5.swp391.entity.Store;
-import org.group5.swp391.repository.AccountRepository;
-import org.group5.swp391.repository.ProductRepository;
-import org.group5.swp391.repository.StoreRepository;
+import org.group5.swp391.entity.*;
+import org.group5.swp391.repository.*;
 import org.group5.swp391.service.ProductService;
+import org.group5.swp391.utils.CloudinaryService;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +30,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductConverter productConverter;
     private final AccountRepository accountRepository;
     private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductAttributeRepository productAttributeRepository;
+    private final ZoneRepository zoneRepository;
+    private final CloudinaryService cloudinaryService;
 
     // Chien
     @Override
     public Page<StoreProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+            throw new RuntimeException("Người dùng chưa đăng nhập!");
         }
         String username = authentication.getName();
         Account account = accountRepository.findByUsername(username).orElseThrow(null);
@@ -53,24 +55,41 @@ public class ProductServiceImpl implements ProductService {
 
     public StoreProductDetailDTO getProduct(String id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
         return productConverter.toStoreProductDetailDTO(product);
     }
 
-    @Transactional
-    public StoreProductDetailDTO updateProduct(String productID, StoreProductDetailDTO productDTO) {
+    public StoreProductDetailDTO updateStoreProduct(String productID, StoreProductDetailDTO dto, MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+            throw new RuntimeException("Người dùng chưa đăng nhập!");
         }
         String username = authentication.getName();
-        Product existingProduct = productRepository.findProductForUser(username, productID)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        productConverter.updateProductFromDTO(productDTO, existingProduct);
-        existingProduct.setUpdatedAt(LocalDateTime.now());
-        existingProduct.setUpdatedBy(username);
-        productRepository.save(existingProduct);
-        return productConverter.toStoreProductDetailDTO(existingProduct);
+        Product product = productRepository.findProductForUser(username, productID)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setInformation(dto.getInformation());
+        String url;
+        try {
+            url = cloudinaryService.uploadFile(file);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tải lên hình ảnh", e);
+        }
+        if(url != null) {
+            product.setProductImage(dto.getProductImage());
+        }
+        Category category = categoryRepository.findById(dto.getCategory().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy danh mục với ID: " + dto.getCategory().getId()));
+        product.setCategory(category);
+        List<ProductAttribute> attributes = productAttributeRepository.findAllById(
+                dto.getAttributes().stream()
+                        .map(StoreProductAttributeDTO::getId)
+                        .toList()
+        );
+        product.setProductAttributes(attributes);
+        productRepository.save(product);
+        return productConverter.toStoreProductDetailDTO(product);
     }
 
     // Minh Tran
@@ -117,6 +136,5 @@ public class ProductServiceImpl implements ProductService {
         List<CustomerProductDTO> productPages = products.stream().map(productConverter::toCustomerProductDTO).collect(Collectors.toList());
         return new PageImpl<>(productPages, pageable, (products.size() + 1));
     }
-
 
 }

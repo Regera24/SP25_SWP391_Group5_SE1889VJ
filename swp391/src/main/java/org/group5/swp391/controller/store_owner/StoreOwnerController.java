@@ -5,6 +5,7 @@ import org.group5.swp391.dto.store_owner.all_employee.StoreEmployeeDTO;
 import org.group5.swp391.dto.store_owner.all_invoice.StoreInvoiceDTO;
 import org.group5.swp391.dto.store_owner.all_invoice.StoreInvoiceDetailDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreCategoryIdAndName;
+import org.group5.swp391.dto.store_owner.all_product.StoreProductAttributeDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.group5.swp391.dto.store_owner.all_statistic.StoreStatisticDTO;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class StoreOwnerController {
     private final EmployeeService employeeService;
     private final StatisticsService statisticsService;
     private final CategoryService categoryService;
+    private final ProductAttributeService productAttributeService;
 
     @GetMapping("/invoices")
     public Page<StoreInvoiceDTO> getInvoices(
@@ -74,19 +77,25 @@ public class StoreOwnerController {
         return productService.getProduct(id);
     }
 
-    @GetMapping("/category")
+    @GetMapping("/all/category")
     public List<StoreCategoryIdAndName> getCategory() {
         return categoryService.getAllStoreCategories();
+    }
+
+    @GetMapping("/all/attribute")
+    public List<StoreProductAttributeDTO> getAttribute() {
+        return productAttributeService.getProductAttributes();
     }
 
     @PutMapping("/product/update/{id}")
     public ResponseEntity<StoreProductDetailDTO> updateProduct(
             @PathVariable String id,
-            @RequestBody StoreProductDetailDTO product) {
+            @RequestBody StoreProductDetailDTO product,
+            @RequestParam("file") MultipartFile file) {
         if (!id.equals(product.getProductID())) {
             return ResponseEntity.badRequest().body(null);
         }
-        StoreProductDetailDTO updatedProduct = productService.updateProduct(id, product);
+        StoreProductDetailDTO updatedProduct = productService.updateStoreProduct(id, product, file);
         if (updatedProduct == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }

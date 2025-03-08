@@ -20,4 +20,5 @@ public class StoreProductDetailDTO {
     StoreInfoIdAndNameDTO store;
     List<StoreProductAttributeDTO> attributes;
     Long quantity;
+    List<String> zones;
 }

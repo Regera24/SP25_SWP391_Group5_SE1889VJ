@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Spin, message, Card, Input, Button, Form, Select, Upload, Image, Descriptions, Tag, List } from "antd";
-import { UploadOutlined } from '@ant-design/icons';
+import { Spin, message, Card, Input, Button, Form, Select, Upload } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import axios from "axios";
+
 import API from "../../../Utils/API/API";
 import { getToken } from "../../../Utils/UserInfoUtils";
 import { getDataWithToken } from "../../../Utils/FetchUtils";
-import axios from "axios";
-import './style.scss';
+
+import "./style.scss";
 
 const { Option } = Select;
 
@@ -14,11 +16,11 @@ const ProductUpdate = () => {
     const { productID } = useParams();
     const navigate = useNavigate();
     const token = getToken();
+
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [attribute, setAttribute] = useState([]);
     const [form] = Form.useForm();
-    const [fileList, setFileList] = useState([]);
-
     useEffect(() => {
         const fetchProductDetail = async () => {
             setLoading(true);
@@ -30,15 +32,15 @@ const ProductUpdate = () => {
                 form.setFieldsValue({
                     ...response,
                     category: response.category?.id,
-                    attributes: response.attributes ? response.attributes.map(attr => attr.value) : [],
+                    attributes: response.attributes
+                        ? response.attributes.map((attr) => attr.value)
+                        : [],
                     storeName: response.store?.name,
+                    productImage: response.productImage, // Ảnh cũ để hiển thị nếu cần
                 });
-                if (response.productImage) {
-                    setFileList([{ uid: '-1', name: 'image.png', status: 'done', url: response.productImage }]);
-                }
             } catch (error) {
                 message.error("Không thể tải chi tiết sản phẩm");
-                navigate("/products");
+                navigate("/store-owner/product");
             } finally {
                 setLoading(false);
             }
@@ -53,44 +55,50 @@ const ProductUpdate = () => {
             }
         };
 
+        const fetchAttributes = async () => {
+            try {
+                const response = await getDataWithToken(API.STORE_OWNER.GET_ATTRIBUTES, token);
+                setAttribute(response);
+            } catch (error) {
+                message.error("Không thể tải danh sách thuộc tính");
+            }
+        };
+
         if (productID) {
             fetchProductDetail();
             fetchCategories();
         }
     }, [productID, token, form, navigate]);
 
-    // Cập nhật hàm PUT: gửi payload dạng JSON
-    const putDataWithToken = async (url, data, token) => {
-        try {
-            const response = await axios.put(url, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Lỗi khi cập nhật dữ liệu:", error);
-            throw error;
-        }
-    };
-
     const handleUpdate = async (values) => {
         setLoading(true);
         try {
-            const payload = {
-                productID: productID,
-                name: values.name,
-                price: values.price,
-                categoryId: values.category,
-                information: values.information || '',
-                status: values.status,
-                attributes: values.attributes
-            };
+            const formData = new FormData();
 
-            await putDataWithToken(`${API.STORE_OWNER.UPDATE_STORE_PRODUCT}/${productID}`, payload, token);
+            // Thêm các trường dữ liệu vào FormData
+            formData.append("productID", productID);
+            formData.append("name", values.name);
+            formData.append("price", values.price);
+            formData.append("categoryId", values.category);
+            formData.append("information", values.information || "");
+            formData.append("attributes", JSON.stringify(values.attributes || []));
+
+            // Nếu có file ảnh mới, thêm vào FormData
+            if (values.productImage && values.productImage.length > 0) {
+                const file = values.productImage[0].originFileObj;
+                formData.append("file", file);
+            }
+
+            // Gửi request cập nhật sản phẩm
+            await axios.put(`${API.STORE_OWNER.UPDATE_STORE_PRODUCT}/${productID}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
             message.success("Cập nhật sản phẩm thành công");
-            navigate("/products");
+            navigate("/store-owner/product");
         } catch (error) {
             message.error("Cập nhật sản phẩm thất bại");
         } finally {
@@ -98,14 +106,12 @@ const ProductUpdate = () => {
         }
     };
 
-    const uploadProps = {
-        onRemove: () => setFileList([]),
-        beforeUpload: (file) => {
-            setFileList([file]);
-            return false; 
-        },
-        fileList,
-    };
+    const uploadButton = (
+        <button style={{ border: 0, background: "none" }} type="button">
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
 
     return (
         <div className="update-product-container">
@@ -126,7 +132,7 @@ const ProductUpdate = () => {
                             label="Giá"
                             rules={[{ required: true, message: "Vui lòng nhập giá" }]}
                         >
-                            <Input type="number" min={0} step={1000}/>
+                            <Input type="number" min={0} step={1000} />
                         </Form.Item>
                         <Form.Item
                             name="category"
@@ -134,48 +140,53 @@ const ProductUpdate = () => {
                             rules={[{ required: true, message: "Vui lòng chọn loại gạo" }]}
                         >
                             <Select placeholder="Chọn loại gạo">
-                                {categories.map(cat => (
-                                    <Option key={cat.id} value={cat.id}>{cat.name}</Option>
+                                {categories.map((cat) => (
+                                    <Option key={cat.id} value={cat.id}>
+                                        {cat.name}
+                                    </Option>
                                 ))}
                             </Select>
                         </Form.Item>
-                        <Form.Item
-                            name="information"
-                            label="Mô tả"
-                        >
-                            <Input.TextArea rows={4} />
-                        </Form.Item>
-                        <Form.Item
-                            name="status"
-                            label="Trạng thái"
-                            rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
-                        >
-                            <Select placeholder="Chọn trạng thái">
-                                <Option value="available">Còn hàng</Option>
-                                <Option value="out_of_stock">Hết hàng</Option>
-                            </Select>
+                        <Form.Item name="information" label="Mô tả">
+                            <Input.TextArea rows={4} maxLength={200} showCount />
                         </Form.Item>
                         <Form.Item
                             name="attributes"
                             label="Thuộc tính"
+                            rules={[{ required: true, message: "Vui lòng chọn thuộc tính" }]}
                         >
-                            <Select mode="tags" placeholder="Nhập thuộc tính">
-                            </Select>
+                            <Select
+                                mode="multiple"
+                                placeholder="Chọn thuộc tính"
+                                options={attribute.map((attr) => ({
+                                    label: attr.name,
+                                    value: attr.value,
+                                }))}
+                            />
                         </Form.Item>
-                        <Form.Item
-                            name="storeName"
-                            label="Cửa hàng"
-                        >
+                        <Form.Item name="storeName" label="Cửa hàng">
                             <Input disabled />
                         </Form.Item>
-                        <Form.Item label="Ảnh sản phẩm">
-                            <Upload {...uploadProps} listType="picture">
-                                <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                        <Form.Item name="quantity" label="Số lượng">
+                            <Input disabled />
+                        </Form.Item>
+                        <Form.Item
+                            name="productImage"
+                            label="Ảnh sản phẩm"
+                            valuePropName="fileList"
+                            getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+                        >
+                            <Upload listType="picture-card" maxCount={1} beforeUpload={() => false}>
+                                {uploadButton}
                             </Upload>
                         </Form.Item>
                         <div className="update-product-actions">
-                            <Button type="primary" htmlType="submit">Cập nhật</Button>
-                            <Button onClick={() => navigate("/products")} danger>Hủy</Button>
+                            <Button type="primary" htmlType="submit">
+                                Cập nhật
+                            </Button>
+                            <Button onClick={() => navigate("/store-owner/product")} danger>
+                                Hủy
+                            </Button>
                         </div>
                     </Form>
                 </Card>

@@ -44,10 +44,7 @@ const ProductDetailModal = ({ visible, productID, onClose }) => {
 
     const handleDelete = () => {
         message.warning(`Xóa sản phẩm với ID: ${productID}`);
-        // Thêm logic xóa ở đây, ví dụ gọi API DELETE rồi đóng Modal
-        // Ví dụ:
-        // await deleteProduct(productID, token);
-        // onClose();
+        
     };
 
     return (

@@ -24,7 +24,7 @@ public class Product extends AbstractEntity{
     @Column(name = "Information", columnDefinition = "NVARCHAR(255)")
     String information;
 
-    @Column(name = "ProductImage", nullable = false)
+    @Column(name = "ProductImage")
     String productImage;
 
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)

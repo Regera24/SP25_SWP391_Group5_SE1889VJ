@@ -26,7 +26,7 @@ import CustomerIN4Edit from "./Pages/Employee_CustomerLayout/components/customeE
 import CustomerIN4Create from "./Pages/Employee_CustomerLayout/components/customerCreate";
 import Employee from "./Pages/ShopOwner/Employee/Employee";
 import Employee_Products from "./Pages/Employee_ProductLayout/components/productsList";
-import Statistic from "./Pages/ShopOwner/Statistic/Statistic";
+import StatisticData from "./Pages/ShopOwner/StatisticData/StatisticData.js";
 import Debt from "./Pages/Debt";
 import Employee_Invoices from "./Pages/Employee_InvoiceLayout";
 import ProductUpdate from "./Pages/ShopOwner/ProductUpdate/ProductUpdate";
@@ -39,6 +39,7 @@ import Zone from "./Pages/StoreManagement/Zone/Zone.js";
 import StoreLayout from "./Components/StoreLayout/storelayout.js";
 import StoreProduct from "./Pages/StoreManagement/Product/Product.js";
 import { WebSocketProvider } from "./Utils/Websocket/WebsocketContextProvider.js"
+import StatisticChart from "./Pages/ShopOwner/StatisticChart/StatisticChart.js";
 
 function App() {
   return (
@@ -88,7 +89,8 @@ function App() {
                 <Route path="invoice" element={<Invoice />}></Route>
                 <Route path="product" element={<Product />}></Route>
                 <Route path="employee" element={<Employee />}></Route>
-                <Route path="statistic" element={<Statistic />}></Route>
+                <Route path="statistic/data" element={<StatisticData />}></Route>
+                <Route path="statistic/chart" element={<StatisticChart />}></Route>
                 <Route path="debt" element={<Debt />}></Route>
                 <Route path="product/update" element={<ProductUpdate />} />
                 <Route path="employee/update" element={<EmployeeUpdate />} />

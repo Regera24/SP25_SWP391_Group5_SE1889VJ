@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import {
   AppstoreOutlined,
+  BarChartOutlined,
   FileDoneOutlined,
   FileTextOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  PieChartOutlined,
   ProductOutlined,
   ShopOutlined,
+  TableOutlined,
   TeamOutlined,
   UploadOutlined,
   UserOutlined,
@@ -33,9 +36,11 @@ const StoreOwnerLayout = () => {
         ? '3'
         : location.pathname.startsWith('/store-owner/employee')
           ? '4'
-          : location.pathname.startsWith('/store-owner/statistic')
-            ? '5'
-            : '';
+          : location.pathname.startsWith('/store-owner/statistic/data')
+            ? '5.1'
+            : location.pathname.startsWith('/store-owner/statistic/chart')
+              ? '5.2'
+              : '';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -78,9 +83,21 @@ const StoreOwnerLayout = () => {
               },
               {
                 key: '5',
-                icon: <TeamOutlined />,
-                label: <Link to="/store-owner/statistic" style={{ textDecoration: 'none' }}>Statistic</Link>,
-              }
+                icon: <PieChartOutlined />,
+                label: 'Statistic',
+                children: [
+                    {
+                        key: '5.1',
+                        icon: <TableOutlined />,
+                        label: <Link to="/store-owner/statistic/data" style={{ textDecoration: 'none' }}>Data</Link>,
+                    },
+                    {
+                        key: '5.2',
+                        icon: <BarChartOutlined />,
+                        label: <Link to="/store-owner/statistic/chart" style={{ textDecoration: 'none' }}>Chart</Link>,
+                    },
+                ],
+            }
             ]}
           />
         </Sider>

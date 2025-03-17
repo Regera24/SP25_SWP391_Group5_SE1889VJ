@@ -87,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             return cloudinaryService.uploadFile(file);
         } catch (IOException e) {
-            throw new RuntimeException("Không thể tải ảnh lên!");
+            throw new AppException(ErrorCode.CANT_UPLOAD_IMAGE);
         }
     }
 

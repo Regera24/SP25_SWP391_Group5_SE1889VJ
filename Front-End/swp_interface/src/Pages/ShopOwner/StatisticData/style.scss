@@ -1,0 +1,62 @@
+.ant-table {
+    user-select: none;
+}
+
+.filter-form {
+    padding: 16px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+
+    .ant-form-item {
+        margin-bottom: 8px;
+        
+        // Fix width for all inputs
+        .ant-input,
+        .ant-input-number,
+        .ant-select,
+        .ant-picker {
+            width: 100% !important;
+            min-width: 120px;
+        }
+
+        // Specific styles for Select dropdowns
+        .ant-select-selector {
+            width: 100% !important;
+        }
+    }
+
+    // Style for reset button
+    .ant-btn {
+        min-width: 80px;
+        margin-left: 8px;
+    }
+
+    // Fix dropdown menu width
+    .ant-select-dropdown {
+        min-width: 120px !important;
+    }
+
+    // Ensure consistent heights
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector,
+    .ant-picker {
+        height: 32px !important;
+        line-height: 32px !important;
+    }
+
+    // Ensure input number arrows stay visible
+    .ant-input-number-handler-wrap {
+        opacity: 1;
+    }
+}
+
+// Ensure dropdown options are properly sized
+.ant-select-dropdown {
+    .ant-select-item {
+        padding: 5px 12px;
+        min-height: 32px;
+    }
+}

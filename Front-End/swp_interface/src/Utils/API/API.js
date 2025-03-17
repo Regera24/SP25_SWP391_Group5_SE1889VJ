@@ -66,6 +66,7 @@ const API = {
     UPDATE_STORE_EMPLOYEE: `${API_BASE_URL}/store-owner/employee/update`,
     DELETE_STORE_EMPLOYEE: `${API_BASE_URL}/store-owner/employee/delete`,
     GET_EMPTY_ZONES: `${API_BASE_URL}/store-owner/store/empty-zone`,
+    GET_STORE_STATISTIC_CHART: `${API_BASE_URL}/store-owner/statistics`,
   },
   STORE_DETAIL: {
     GET_STORE_ZONES: `${API_BASE_URL}/store-detail/zones`,

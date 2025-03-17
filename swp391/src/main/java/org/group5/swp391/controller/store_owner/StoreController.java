@@ -58,7 +58,6 @@ public class StoreController {
         try {
             productService.addProduct(storeID, productDTO);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 

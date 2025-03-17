@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SonarLintProjectSettings">
+    <option name="moduleMapping">
+      <map>
+        <entry key="SP25_SWP391_Group5_SE1889VJ" value="SP25_SWP391_Group5_SE1889VJ_New" />
+      </map>
+    </option>
+  </component>
+</project>

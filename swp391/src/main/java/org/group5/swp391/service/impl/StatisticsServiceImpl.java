@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.group5.swp391.converter.StatisticsConverter;
 import org.group5.swp391.dto.store_owner.all_statistic.StoreStatisticDTO;
+import org.group5.swp391.dto.store_owner.all_statistic.StoreStatisticDataDTO;
 import org.group5.swp391.entity.Account;
 import org.group5.swp391.entity.Statistics;
 import org.group5.swp391.entity.Store;
-import org.group5.swp391.repository.AccountRepository;
-import org.group5.swp391.repository.StatisticsRepository;
-import org.group5.swp391.repository.StoreRepository;
+import org.group5.swp391.repository.*;
 import org.group5.swp391.service.StatisticsService;
 import org.group5.swp391.utils.CurrentUserDetails;
 import org.springframework.data.domain.Page;
@@ -27,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,7 +41,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final StatisticsConverter statisticsConverter;
     private final AccountRepository accountRepository;
     private final StoreRepository storeRepository;
-
+    private final EmployeeRepository employeeRepository;
+    private final ProductRepository productRepository;
     @Override
     public Page<StoreStatisticDTO> getStatistics(String storeName, Double totalMoneyMin, Double totalMoneyMax,
                                                  String description, String strType, LocalDate createdAtStart,
@@ -52,16 +53,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             throw new AccessDeniedException("Bạn chưa đăng nhập!");
         }
         String username = authentication.getName();
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Tài khoản không tồn tại"));
-        List<Store> stores = storeRepository.findByStoreAccount(account);
-        if (stores.isEmpty()) {
-            throw new ResponseStatusException(NOT_FOUND, "Không có cửa hàng nào thuộc tài khoản này.");
-        }
-        List<String> storeIds = stores.stream()
-                .map(Store::getId)
-                .toList();
-
+        List<String> storeIds = storeRepository.findIdsByUserName(username);
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         description = (description != null && description.isEmpty()) ? null : description;
@@ -76,18 +68,18 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public Map<String, Map<String, Double>> getStatisticsByDescription(LocalDate createdAtStart, LocalDate createdAtEnd) {
+    public Map<String, Map<String, Double>> getStatisticsByDescription(LocalDate createdAtStart, LocalDate createdAtEnd, List<String> storeIds) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AccessDeniedException("Bạn chưa đăng nhập!");
         }
         String username = authentication.getName();
-
+        if (storeIds == null || storeIds.isEmpty() || storeIds.contains("all")) {
+            storeIds = storeRepository.findIdsByUserName(username);
+        }
         LocalDateTime startDateTime = createdAtStart != null ? createdAtStart.atStartOfDay() : null;
         LocalDateTime endDateTime = createdAtEnd != null ? createdAtEnd.atTime(LocalTime.MAX) : null;
-
-        List<Statistics> statisticsList = statisticsRepository.findStatisticsByDescription(username, startDateTime, endDateTime, null);
-
+        List<Statistics> statisticsList = statisticsRepository.findStatisticsByDescription(storeIds, startDateTime, endDateTime, null);
         return statisticsList.stream()
                 .collect(Collectors.groupingBy(
                         stat -> stat.getCreatedAt().toLocalDate().toString(),
@@ -99,18 +91,18 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public Map<String, Map<String, Double>> getStatisticsByType(LocalDate createdAtStart, LocalDate createdAtEnd) {
+    public Map<String, Map<String, Double>> getStatisticsByType(LocalDate createdAtStart, LocalDate createdAtEnd, List<String> storeIds) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AccessDeniedException("Bạn chưa đăng nhập!");
         }
         String username = authentication.getName();
-
+        if (storeIds == null || storeIds.isEmpty() || storeIds.contains("all")) {
+            storeIds = storeRepository.findIdsByUserName(username);
+        }
         LocalDateTime startDateTime = createdAtStart != null ? createdAtStart.atStartOfDay() : null;
         LocalDateTime endDateTime = createdAtEnd != null ? createdAtEnd.atTime(LocalTime.MAX) : null;
-
-        List<Statistics> statisticsList = statisticsRepository.findStatisticsByType(username, startDateTime, endDateTime, null);
-
+        List<Statistics> statisticsList = statisticsRepository.findStatisticsByType(storeIds, startDateTime, endDateTime, null);
         return statisticsList.stream()
                 .collect(Collectors.groupingBy(
                         stat -> stat.getCreatedAt().toLocalDate().toString(),
@@ -119,5 +111,14 @@ public class StatisticsServiceImpl implements StatisticsService {
                                 Collectors.summingDouble(Statistics::getTotalMoney)
                         )
                 ));
+    }
+
+    public StoreStatisticDataDTO getStatisticTransactionsByStores(List<String> storeIds){
+        int totalEmployees = employeeRepository.countByStoreIdIn(storeIds);
+        int totalProducts = productRepository.countByStoreIdIn(storeIds);
+        int totalTransactions = statisticsRepository.countByStoreIdIn(storeIds);
+        double totalImport = statisticsRepository.getTotalImport(storeIds);
+        double totalExport = statisticsRepository.getTotalExport(storeIds);
+        return new StoreStatisticDataDTO(totalEmployees,totalProducts, totalTransactions, totalImport, totalExport);
     }
 }

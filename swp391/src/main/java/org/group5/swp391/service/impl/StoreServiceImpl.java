@@ -3,6 +3,7 @@ package org.group5.swp391.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.group5.swp391.converter.StoreConverter;
 import org.group5.swp391.dto.response.AdminResponse.ViewStoreResponse;
+import org.group5.swp391.dto.store_owner.all_product.StoreInfoIdAndNameDTO;
 import org.group5.swp391.dto.store_owner.all_store.StoreInfoDTO;
 import org.group5.swp391.entity.Account;
 import org.group5.swp391.entity.Store;
@@ -77,6 +78,16 @@ public class StoreServiceImpl implements StoreService {
                         .storeName(item.getStoreName())
                         .build())
                 .toList();
+    }
+
+    public List<StoreInfoIdAndNameDTO> getStoresInfoIdAndName(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String username = authentication.getName();
+        List<Store> list = storeRepository.findByUserName(username);
+        return list.stream().map(storeConverter::toStoreInfoIdAndNameDTO).toList();
     }
 
 }

@@ -46,4 +46,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
     AND e.id = :employeeId
 """)
     Optional<Employee> findEmployeeForUser(@Param("username") String username, @Param("employeeId") String employeeId);
+
+    int countByStoreIdIn(List<String> storeIds);
 }

@@ -20,7 +20,7 @@
             > div {
                 display: flex;
                 align-items: center;
-                
+
                 label {
                     width: 120px;
                     margin-right: 12px;
@@ -65,7 +65,7 @@
 
             .type-select {
                 width: 160px;
-                
+
                 .ant-select-selector {
                     height: 32px !important;
                     padding: 0 11px;
@@ -121,30 +121,17 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-radius: 8px;
             overflow: hidden;
+            border-left: 4px solid; // Thêm border-left chung
+            background: linear-gradient(to right, rgba(130, 130, 130, 0.05), transparent); 
 
             &:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
 
-            &.import {
-                border-left: 4px solid #ff6384;
-                background: linear-gradient(to right, rgba(255, 99, 132, 0.05), transparent);
-            }
-
-            &.export {
-                border-left: 4px solid #36a2eb;
-                background: linear-gradient(to right, rgba(54, 162, 235, 0.05), transparent);
-            }
-
-            &.total {
-                border-left: 4px solid #4bc0c0;
-                background: linear-gradient(to right, rgba(75, 192, 192, 0.05), transparent);
-            }
-
-            &.total-amount {
-                border-left: 4px solid #ff9f40;
-                background: linear-gradient(to right, rgba(255, 159, 64, 0.05), transparent);
+            &:nth-child(1) {
+                border-color: #40a9ff;
+                .summary-amount { color: #40a9ff; }
             }
 
             .summary-type {
@@ -158,14 +145,6 @@
                 font-size: 20px;
                 font-weight: 600;
                 color: #333;
-
-                &.positive {
-                    color: #52c41a;
-                }
-
-                &.negative {
-                    color: #f5222d;
-                }
             }
 
             .ant-card-body {

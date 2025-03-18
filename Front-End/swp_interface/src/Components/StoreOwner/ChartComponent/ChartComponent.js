@@ -57,7 +57,7 @@ const formatCurrency = (value) => {
     }).format(value);
 };
 
-const ChartComponent = ({ apiUrl }) => {
+const ChartComponent = ({ apiUrl, storeIds }) => {
     const [dateRange, setDateRange] = useState({
         startDate: new Date(new Date().setDate(new Date().getDate() - 7)),
         endDate: new Date()
@@ -171,15 +171,21 @@ const ChartComponent = ({ apiUrl }) => {
         const { startDate, endDate } = dateRange;
         const formattedStartDate = startDate.toISOString().split('T')[0];
         const formattedEndDate = endDate.toISOString().split('T')[0];
-
+    
         setLoading(true);
         try {
+            const storeParam = storeIds && !storeIds.includes('all') 
+                ? `&storeIds=${storeIds.join(',')}` 
+                : '';
+                
             const response = await getDataWithToken(
-                `${apiUrl}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`,
+                `${apiUrl}?startDate=${formattedStartDate}&endDate=${formattedEndDate}${storeParam}`,
                 token
             );
+            
             const preparedData = prepareChartData(response);
             const summaryData = calculateSummary(response);
+            
             setChartData(preparedData);
             setSummary(summaryData);
         } catch (error) {
@@ -194,7 +200,7 @@ const ChartComponent = ({ apiUrl }) => {
         } finally {
             setLoading(false);
         }
-    }, [apiUrl, dateRange, token, prepareChartData, calculateSummary]);
+    }, [apiUrl, dateRange, token, prepareChartData, calculateSummary, storeIds]);
 
     useEffect(() => {
         fetchChartData();

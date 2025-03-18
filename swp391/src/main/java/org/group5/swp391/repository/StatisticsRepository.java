@@ -41,13 +41,13 @@ public interface StatisticsRepository extends JpaRepository<Statistics, String> 
     @Query("""
     SELECT s
     FROM Statistics s
-    WHERE s.store.storeAccount.username = :username
+    WHERE s.store.id IN :storeIds
     AND (:createdAtStart IS NULL OR s.createdAt >= :createdAtStart)
     AND (:createdAtEnd IS NULL OR s.createdAt <= :createdAtEnd)
     AND (:description IS NULL OR s.description = :description)
 """)
     List<Statistics> findStatisticsByDescription(
-            @Param("username") String username,
+            @Param("storeIds") List<String> storeIds,
             @Param("createdAtStart") LocalDateTime createdAtStart,
             @Param("createdAtEnd") LocalDateTime createdAtEnd,
             @Param("description") String description
@@ -56,15 +56,37 @@ public interface StatisticsRepository extends JpaRepository<Statistics, String> 
     @Query("""
     SELECT s
     FROM Statistics s
-    WHERE s.store.storeAccount.username = :username
+    WHERE s.store.id IN :storeIds
     AND (:createdAtStart IS NULL OR s.createdAt >= :createdAtStart)
     AND (:createdAtEnd IS NULL OR s.createdAt <= :createdAtEnd)
     AND (:type IS NULL OR s.type = :type)
 """)
     List<Statistics> findStatisticsByType(
-            @Param("username") String username,
+            @Param("storeIds") List<String> storeIds,
             @Param("createdAtStart") LocalDateTime createdAtStart,
             @Param("createdAtEnd") LocalDateTime createdAtEnd,
             @Param("type") Boolean type
+    );
+
+    int countByStoreIdIn(List<String> storeIds);
+
+    @Query("""
+    SELECT SUM(s.totalMoney)
+    FROM Statistics s
+    WHERE s.store.id IN :storeIds
+    AND LOWER(s.description) LIKE LOWER('Import')
+""")
+    Double getTotalImport(
+            @Param("storeIds") List<String> storeIds
+    );
+
+    @Query("""
+    SELECT SUM(s.totalMoney)
+    FROM Statistics s
+    WHERE s.store.id IN :storeIds
+    AND LOWER(s.description) LIKE LOWER('Export')
+""")
+    Double getTotalExport(
+            @Param("storeIds") List<String> storeIds
     );
 }

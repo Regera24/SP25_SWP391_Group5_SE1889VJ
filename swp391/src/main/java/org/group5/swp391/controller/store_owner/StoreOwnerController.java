@@ -7,6 +7,7 @@ import org.group5.swp391.dto.store_owner.all_invoice.StoreInvoiceDTO;
 import org.group5.swp391.dto.store_owner.all_invoice.StoreInvoiceDetailDTO;
 import org.group5.swp391.dto.store_owner.all_product.*;
 import org.group5.swp391.dto.store_owner.all_statistic.StoreStatisticDTO;
+import org.group5.swp391.dto.store_owner.all_statistic.StoreStatisticDataDTO;
 import org.group5.swp391.dto.store_owner.all_store.StoreInfoDTO;
 import org.group5.swp391.exception.AppException;
 import org.group5.swp391.exception.ErrorCode;
@@ -85,6 +86,14 @@ public class StoreOwnerController {
         }
     }
 
+    @GetMapping("/all/stores")
+    public List<StoreInfoIdAndNameDTO> getAllStores() {
+        try {
+            return storeService.getStoresInfoIdAndName();
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.CANT_GET_INFO);
+        }
+    }
 
     @GetMapping("/products")
     public Page<StoreProductDTO> getProducts(
@@ -248,7 +257,7 @@ public class StoreOwnerController {
         return ResponseEntity.ok("Cập nhật sản phẩm thành công");
     }
 
-    @GetMapping("/statistics")
+    @GetMapping("/statistics/data")
     public Page<StoreStatisticDTO> getStatistics(
             @RequestParam(required = false) String storeName,
             @RequestParam(required = false) Double totalMoneyMin,
@@ -269,22 +278,33 @@ public class StoreOwnerController {
 
     }
 
-    @GetMapping("/statistics/by-description")
+    @GetMapping("/statistics/chart/by-description")
     public ResponseEntity<Map<String, Map<String, Double>>> getStatisticsByDescription(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) List<String> storeIds
     ) {
-        Map<String, Map<String, Double>> data = statisticsService.getStatisticsByDescription(startDate, endDate);
+        Map<String, Map<String, Double>> data = statisticsService.getStatisticsByDescription(startDate, endDate, storeIds);
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/statistics/by-type")
+    @GetMapping("/statistics/chart/by-type")
     public ResponseEntity<Map<String, Map<String, Double>>> getStatisticsByType(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) List<String> storeIds
     ) {
-        Map<String, Map<String, Double>> data = statisticsService.getStatisticsByType(startDate, endDate);
+        Map<String, Map<String, Double>> data = statisticsService.getStatisticsByType(startDate, endDate, storeIds);
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/statistic-transactions")
+    public StoreStatisticDataDTO getTransactionsByStores(@RequestParam List<String> storeIds) {
+        try {
+            return statisticsService.getStatisticTransactionsByStores(storeIds);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.CANT_GET_INFO);
+        }
     }
 }
 

@@ -16,18 +16,17 @@ const Store = () => {
     const [searchValue, setSearchValue] = useState('');
     const [timeoutId, setTimeoutId] = useState(null);
 
-    // Quản lý trạng thái phân trang
     const [pagination, setPagination] = useState({
-        current: 1, // Trang hiện tại (thường bắt đầu từ 1)
-        pageSize: 5, // Số lượng item mỗi trang
-        total: 0 // Tổng số item (lấy từ response API)
+        current: 1, 
+        pageSize: 5, 
+        total: 0 
     });
 
     const getStoreParams = () => {
         return qs.stringify({
             storeName: searchValue,
-            page: pagination.current - 1, // Backend thường nhận page bắt đầu từ 0
-            size: pagination.pageSize, // Số item mỗi trang
+            page: pagination.current - 1, 
+            size: pagination.pageSize, 
         });
     };
 
@@ -37,11 +36,10 @@ const Store = () => {
             const queryParams = `?${getStoreParams()}`;
             const response = await getDataWithToken(API.STORE_OWNER.GET_STORE + queryParams, token);
 
-            // Update data và thông tin pagination
             setData(response.content);
             setPagination((prev) => ({
                 ...prev,
-                total: response.totalElements, // Tổng số lượng item từ API
+                total: response.totalElements, 
             }));
         } catch (error) {
             message.error('Không thể tải dữ liệu danh sách stores');

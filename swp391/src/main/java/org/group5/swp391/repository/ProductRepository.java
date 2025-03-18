@@ -20,6 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     Page<Product> findByStoreInAndNameContainingIgnoreCase(Collection<Store> stores, String name, Pageable pageable);
 
+    int countByStoreIdIn(List<String> storeIds);
     //minh
     @Query("SELECT s FROM Product s WHERE s.store.id = :id " +
             "AND (:name IS NULL OR :name = '' " +

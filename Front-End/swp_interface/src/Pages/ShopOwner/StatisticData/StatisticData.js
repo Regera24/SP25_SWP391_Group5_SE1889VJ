@@ -167,7 +167,7 @@ const Statistic = () => {
         tableParams.pagination.pageSize,
         tableParams.sortField,
         tableParams.sortOrder,
-        filters // Include filters in the dependency array
+        filters 
     ]);
 
     const handleTableChange = (pagination, _, sorter) => {
@@ -180,19 +180,16 @@ const Statistic = () => {
 
 
     const handleInputChange = (changedValues, allValues) => {
-        // Clear previous timeout
         if (searchTimeout) {
             clearTimeout(searchTimeout);
         }
 
-        // Set new timeout
         setSearchTimeout(
             setTimeout(() => {
                 handleSearch();
             }, 1000)
         );
 
-        // Immediately update form values
         form.setFieldsValue(allValues);
     };
 
@@ -231,20 +228,20 @@ const Statistic = () => {
     };
 
     return (
-        <div>
+        <div className="statistics-list-container">
             <Form
                 form={form}
                 layout="vertical"
                 className="filter-form"
-                onValuesChange={handleInputChange} // Use onValuesChange
+                onValuesChange={handleInputChange}
             >
-                <Row gutter={16}>
-                    <Col span={4}>
+                <Row gutter={16} className="filter-form-row">
+                    <Col span={4} className="filter-form-col">
                         <Form.Item label="Store Name" name="storeName">
-                            <Input placeholder="Enter store name" />
+                            <Input placeholder="Enter store name" className="filter-form-input" />
                         </Form.Item>
                     </Col>
-                    <Col span={3}>
+                    <Col span={3} className="filter-form-col">
                         <Form.Item label="Min Money" name="totalMoneyMin">
                             <InputNumber
                                 placeholder="Min"
@@ -252,10 +249,11 @@ const Statistic = () => {
                                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
                                 step={1000}
+                                className="filter-form-input-number"
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={3}>
+                    <Col span={3} className="filter-form-col">
                         <Form.Item label="Max Money" name="totalMoneyMax">
                             <InputNumber
                                 placeholder="Max"
@@ -263,41 +261,44 @@ const Statistic = () => {
                                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
                                 step={1000}
+                                className="filter-form-input-number"
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={3}>
+                    <Col span={3} className="filter-form-col">
                         <Form.Item label="Description" name="description">
                             <Select
                                 allowClear
                                 options={descriptionOptions}
                                 placeholder="Select type"
+                                className="filter-form-select"
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={3}>
+                    <Col span={3} className="filter-form-col">
                         <Form.Item label="Type" name="type">
                             <Select
                                 allowClear
                                 options={typeOptions}
                                 placeholder="Select type"
+                                className="filter-form-select"
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={4}>
+                    <Col span={4} className="filter-form-col">
                         <Form.Item label="Created By" name="createdBy">
-                            <Input placeholder="Enter creator" />
+                            <Input placeholder="Enter creator" className="filter-form-input" />
                         </Form.Item>
                     </Col>
-                    <Col span={4}>
+                    <Col span={4} className="filter-form-col">
                         <Form.Item label="Created At Range" name="createdAtRange">
-                            <RangePicker style={{ width: '100%' }} />
+                            <RangePicker style={{ width: '100%' }} className="filter-form-range-picker" />
                         </Form.Item>
                     </Col>
                 </Row>
-                <Row>
-                    <Col span={24} style={{ textAlign: 'right', marginTop: '8px' }}>
-                        <Button onClick={handleReset}>
+                <Row className="filter-form-row">
+                    <Col span={24} className="filter-form-col" style={{ textAlign: 'right', marginTop: '8px' }}>
+                        <Button onClick={handleReset} className="filter-form-reset-button">
                             Reset
                         </Button>
                     </Col>
@@ -305,6 +306,7 @@ const Statistic = () => {
             </Form>
 
             <Table
+                className="statistics-table"
                 columns={columns}
                 rowKey="statisticsID"
                 dataSource={data}

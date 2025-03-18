@@ -1,62 +1,88 @@
-.ant-table {
-    user-select: none;
-}
-
-.filter-form {
-    padding: 16px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 16px;
-
-    .ant-form-item {
-        margin-bottom: 8px;
-        
-        // Fix width for all inputs
-        .ant-input,
-        .ant-input-number,
-        .ant-select,
-        .ant-picker {
-            width: 100% !important;
-            min-width: 120px;
+.statistics-list-container {
+    .filter-form {
+      margin-bottom: 24px;
+  
+      .ant-form-item {
+        margin-bottom: 16px;
+      }
+  
+      &-row {
+        display: flex;
+        flex-wrap: wrap;
+  
+        .filter-form-col {
+          padding-left: 8px;
+          padding-right: 8px;
+  
+          .ant-form-item {
+            label {
+              font-weight: bold;
+              color: #333;
+              display: block;
+              margin-bottom: 4px;
+            }
+  
+            .filter-form-input,
+            .filter-form-select,
+            .filter-form-input-number,
+            .filter-form-range-picker
+             {
+              width: 100%;
+              border-radius: 4px;
+  
+              &:hover {
+                border-color: #40a9ff;
+              }
+  
+              &:focus,
+              &.ant-select-focused,
+              &.ant-input-number-focused
+              {
+                border-color: #40a9ff;
+                box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+              }
+                &[disabled] {
+                  background-color: #f5f5f5;
+                  color: #bfbfbf;
+                  cursor: not-allowed;
+  
+                  &:hover{
+                      border-color: #d9d9d9;
+                  }
+              }
+            }
+  
+          }
         }
-
-        // Specific styles for Select dropdowns
-        .ant-select-selector {
-            width: 100% !important;
-        }
-    }
-
-    // Style for reset button
-    .ant-btn {
-        min-width: 80px;
+      }
+  
+      .filter-form-reset-button {
         margin-left: 8px;
+        &:hover {
+          color: #40a9ff;
+          border-color: #40a9ff;
+        }
+      }
     }
-
-    // Fix dropdown menu width
-    .ant-select-dropdown {
-        min-width: 120px !important;
+  
+    .statistics-table {
+      user-select: none;
+  
+      .ant-table-thead > tr > th {
+        background-color: #f0f2f5;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+  
+      .ant-table-tbody > tr:hover > td {
+        background: #e6f7ff;
+      }
+  
+      .ant-table-pagination.ant-pagination {
+        margin-top: 16px;
+      }
+      .ant-spin-nested-loading > div > .ant-spin {
+        max-height: 100%;
+      }
     }
-
-    // Ensure consistent heights
-    .ant-input,
-    .ant-input-number,
-    .ant-select-selector,
-    .ant-picker {
-        height: 32px !important;
-        line-height: 32px !important;
-    }
-
-    // Ensure input number arrows stay visible
-    .ant-input-number-handler-wrap {
-        opacity: 1;
-    }
-}
-
-// Ensure dropdown options are properly sized
-.ant-select-dropdown {
-    .ant-select-item {
-        padding: 5px 12px;
-        min-height: 32px;
-    }
-}
+  }

@@ -203,15 +203,20 @@ public class StoreOwnerController {
 
     @GetMapping("/employees")
     public Page<StoreEmployeeDTO> getEmployees(
-            @RequestParam(defaultValue = "") String employeeName,
+            @RequestParam(defaultValue = "") String employeeID,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String email,
+            @RequestParam(defaultValue = "") String phoneNumber,
+            @RequestParam(defaultValue = "") List<String> store,
+            @RequestParam(defaultValue = "all") String gender,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "employeeID") String sortBy,
-            @RequestParam(defaultValue = "false") boolean descending,
-            @RequestParam(defaultValue = "all") String gender
+            @RequestParam(defaultValue = "false") boolean descending
     ) {
+        System.out.println(store);
         try {
-            return employeeService.getEmployees(employeeName, page, size, sortBy, descending, gender);
+            return employeeService.getEmployees(employeeID, name, email, phoneNumber, store, gender, page, size, sortBy, descending);
         } catch (Exception e) {
             throw new AppException(ErrorCode.CANT_GET_INFO);
         }

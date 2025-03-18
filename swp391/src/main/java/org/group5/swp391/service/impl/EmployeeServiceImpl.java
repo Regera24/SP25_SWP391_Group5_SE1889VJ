@@ -38,29 +38,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public Page<StoreEmployeeDTO> getEmployees(String employeeName, int page, int size, String sortBy, boolean descending, String genderStr) {
+    public Page<StoreEmployeeDTO> getEmployees(String employeeID, String name, String email, String phoneNumber, List<String> store, String strGender,int page, int size, String sortBy, boolean descending){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AccessDeniedException("Bạn chưa đăng nhập!");
         }
         String username = authentication.getName();
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tài khoản không tồn tại"));
-        List<Store> stores = storeRepository.findByStoreAccount(account);
-        if (stores.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bạn không quản lý cửa hàng nào.");
-        }
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Boolean gender = null;
-        if (!genderStr.equalsIgnoreCase("all")) {
-            gender = genderStr.equalsIgnoreCase("Male");
+        if (!strGender.equalsIgnoreCase("all")) {
+            gender = strGender.equalsIgnoreCase("Male");
         }
-        Page<Employee> employees = employeeRepository.findByStoreInAndNameAndGender(
-                stores,
-                (employeeName == null || employeeName.isEmpty()) ? null : employeeName,
-                gender,
-                pageable
+        employeeID = (employeeID != null && !employeeID.trim().isEmpty()) ? employeeID.trim() : null;
+        if (store != null && store.isEmpty()) {
+            store = null;
+        }
+        Page<Employee> employees = employeeRepository.findStoreEmployees(
+                username, employeeID, name, email, phoneNumber, store, gender, pageable
         );
         return employees.map(employeeConverter::toStoreEmployeeDTO);
     }
@@ -113,15 +108,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeConverter.toStoreEmployeeDTO(employee);
     }
 
-
     @Transactional
     public void deleteEmployee(String employeeId) {
         Employee employee = checkEmployeeOfUser(employeeId);
         employeeRepository.delete(employee);
     }
-
-
-
 
 
 }

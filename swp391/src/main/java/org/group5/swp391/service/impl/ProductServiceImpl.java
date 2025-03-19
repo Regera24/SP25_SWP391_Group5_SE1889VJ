@@ -56,22 +56,6 @@ public class ProductServiceImpl implements ProductService {
     private final ZoneRepository zoneRepository;
 
     // Chien
-    @Override
-    public Page<StoreProductDTO> getProducts(String productName, int page, int size, String sortBy, boolean descending) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-        String username = authentication.getName();
-        Account account = accountRepository.findByUsername(username).orElseThrow(null);
-        List<Store> stores = storeRepository.findByStoreAccount(account);
-        Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        if (productName == null || productName.isEmpty()) {
-            productRepository.findAll(pageable).map(productConverter::toStoreProductDTO);
-        }
-        return productRepository.findByStoreInAndNameContainingIgnoreCase(stores, productName, pageable).map(productConverter::toStoreProductDTO);
-    }
 
     private Product checkProductOfUser(String productID) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -83,7 +67,26 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
     }
 
-    public StoreProductDetailDTO getProduct(String id) {
+    @Override
+    public Page<StoreProductDTO> getStoreProducts(String productID, String productName, Double priceMin, Double priceMax,
+                                                  String categoryName, List<String> storeIds, Integer quantityMin, Integer quantityMax,
+                                                  int page, int size, String sortBy, boolean descending) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String username = authentication.getName();
+        Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        if (storeIds != null && storeIds.isEmpty()) {
+            storeIds = null;
+        }
+        productID = (productID != null && !productID.trim().isEmpty()) ? productID.trim() : null;
+        Page<Product> list = productRepository.findProducts(productID, productName, priceMin, priceMax, categoryName, storeIds, quantityMin, quantityMax, username, pageable);
+        return list.map(productConverter::toStoreProductDTO);
+    }
+
+    public StoreProductDetailDTO getStoreProduct(String id) {
         Product product = checkProductOfUser(id);
         return productConverter.toStoreProductDetailDTO(product);
     }
@@ -169,9 +172,6 @@ public class ProductServiceImpl implements ProductService {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Tài khoản không tồn tại"));
         Employee a = employeeRepository.findStoreIdByAccountEmpId(account.getId());
-        System.out.println(a.getStore().getId());
-        System.out.println(sortBy);
-        System.out.println(descending);
         Sort sort = descending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         if (name.equals("") || name.isEmpty()) {
@@ -179,7 +179,6 @@ public class ProductServiceImpl implements ProductService {
         } else {
             name = name.toLowerCase();
             name = capitalizeFirstLetters(name);
-            System.out.println(name);
         }
         Page<Product> productPage = productRepository.findByNameAndStoreIdContainingIgnoreCase(name, a.getStore().getId(), pageable);
         return productPage.map(productConverter::toEmployeeProductDTO);
@@ -293,7 +292,6 @@ public class ProductServiceImpl implements ProductService {
             newProduct.setStore(storeExisting);
             newProduct.setQuantity(storeDetailProductDTO.getQuantity());
             newProduct.setProductImage(storeDetailProductDTO.getProductImage());
-            System.out.println(newProduct.toString());
             productRepository.save(newProduct);
         } catch (Exception e) {
             throw new Exception("Failed to save product: " + e.getMessage());

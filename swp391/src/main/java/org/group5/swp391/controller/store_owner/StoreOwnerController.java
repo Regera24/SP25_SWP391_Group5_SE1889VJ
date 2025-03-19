@@ -17,7 +17,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -97,24 +96,30 @@ public class StoreOwnerController {
 
     @GetMapping("/products")
     public Page<StoreProductDTO> getProducts(
-            @RequestParam String productName,
+            @RequestParam(required = false) String productID,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double priceMin,
+            @RequestParam(required = false) Double priceMax,
+            @RequestParam(required = false) String categoryName,
+            @RequestParam(required = false) List<String> store,
+            @RequestParam(required = false) Integer quantityMin,
+            @RequestParam(required = false) Integer quantityMax,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "false") boolean descending
     ) {
         try {
-            return productService.getProducts(productName, page, size, sortBy, descending);
+            return productService.getStoreProducts(productID, name, priceMin, priceMax, categoryName, store, quantityMin, quantityMax, page, size, sortBy, descending);
         } catch (Exception e) {
             throw new AppException(ErrorCode.CANT_GET_INFO);
         }
     }
-
-
+    
     @GetMapping("/product-detail")
     public StoreProductDetailDTO getProduct(@RequestParam String id) {
         try {
-            return productService.getProduct(id);
+            return productService.getStoreProduct(id);
         } catch (Exception e) {
             throw new AppException(ErrorCode.CANT_GET_INFO);
         }
@@ -214,7 +219,6 @@ public class StoreOwnerController {
             @RequestParam(defaultValue = "employeeID") String sortBy,
             @RequestParam(defaultValue = "false") boolean descending
     ) {
-        System.out.println(store);
         try {
             return employeeService.getEmployees(employeeID, name, email, phoneNumber, store, gender, page, size, sortBy, descending);
         } catch (Exception e) {

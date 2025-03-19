@@ -121,7 +121,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-radius: 8px;
             overflow: hidden;
-            border-left: 4px solid; // Thêm border-left chung
+            border-left: 4px solid; 
             background: linear-gradient(to right, rgba(130, 130, 130, 0.05), transparent); 
 
             &:hover {

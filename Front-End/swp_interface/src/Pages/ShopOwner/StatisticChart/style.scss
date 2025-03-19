@@ -21,7 +21,7 @@
       transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
       border-radius: 8px;
       border: none;
-      height: 100%; // Important for consistent card height
+      height: 100%; 
 
       &:hover {
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -31,9 +31,9 @@
         font-size: 1rem;
         color: #666;
         margin-bottom: 4px;
-        white-space: nowrap; // Prevent title wrapping
-        overflow: hidden;    // Hide overflowed text
-        text-overflow: ellipsis; // Add ellipsis for long titles
+        white-space: nowrap; 
+        overflow: hidden;    
+        text-overflow: ellipsis;
       }
 
       .stat-value {

@@ -43,7 +43,7 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
     const [product, setProduct] = useState(null);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
-    const [showConfirmModal, setShowConfirmModal] = useState(false); 
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     useEffect(() => {
         const fetchProductDetail = async () => {
@@ -52,7 +52,7 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
                 const response = await getDataWithToken(
                     `${API.STORE_OWNER.GET_STORE_PRODUCT_DETAIL}?id=${productID}`,
                     token
-                );                
+                );
                 setProduct(response);
             } catch (err) {
                 error("Không thể tải chi tiết sản phẩm", messageApi);
@@ -75,7 +75,7 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
 
     const handleDelete = async () => {
         try {
-            setLoading(true); 
+            setLoading(true);
             const response = await deleteDataWithToken(
                 `${API.STORE_OWNER.DELETE_STORE_PRODUCT}/${productID}`,
                 token
@@ -83,29 +83,29 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
 
             if (response.success) {
                 success(response.message, messageApi);
-                onClose();         
-                onProductDeleted(); 
+                onClose();
+                onProductDeleted();
             } else {
                 error(response.message || "Xóa sản phẩm thất bại", messageApi);
             }
         } catch (err) {
             error(err.message || "Xóa sản phẩm thất bại", messageApi);
         } finally {
-            setLoading(false);       
+            setLoading(false);
             setShowConfirmModal(false);
         }
     };
 
     const handleCancelDelete = () => {
-        setShowConfirmModal(false); 
+        setShowConfirmModal(false);
     };
 
     const openConfirmModal = () => {
-        setShowConfirmModal(true); 
+        setShowConfirmModal(true);
     }
     return (
         <Modal
-        className="product-detail-modal"
+            className="product-detail-modal"
             title="Chi tiết sản phẩm"
             visible={visible}
             onCancel={onClose}
@@ -129,7 +129,7 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
                             width={300}
                             src={product.productImage || rice_default}
                             alt={product.name}
-                            style={{ objectFit: "cover" }}
+                            style={{ objectFit: "cover" , marginBottom : "30px"}}
                             preview={{
                                 mask: <span>Xem ảnh lớn</span>,
                                 maskClassName: "custom-preview-mask",
@@ -137,20 +137,21 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
                                 maxScale: 10,
                             }}
                         />
+                        <Descriptions column={1} bordered>
+                            <Descriptions.Item label="Giá">
+                                {product.price.toLocaleString()} ₫
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Loại gạo">
+                                {product.category.name}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Số lượng">
+                                {product.quantity} kg
+                            </Descriptions.Item>
+                        </Descriptions>
                     </div>
                     <div className="product-info">
                         <Card title={product.name}>
-                            <Descriptions column={1} bordered>
-                                <Descriptions.Item label="Giá">
-                                    {product.price.toLocaleString()} ₫
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Loại gạo">
-                                    {product.category.name}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Số lượng">
-                                    {product.quantity} kg
-                                </Descriptions.Item>
-                            </Descriptions>
+
                             <div className="product-attributes">
                                 <strong>Thuộc tính:</strong>
                                 {product.attributes.map((attr) => (
@@ -188,7 +189,7 @@ const ProductDetailModal = ({ visible, productID, onClose, onProductDeleted }) =
                         onCancel={handleCancelDelete}
                         okText="Xác nhận"
                         cancelText="Hủy"
-                        okButtonProps={{ danger: true, loading: loading}}
+                        okButtonProps={{ danger: true, loading: loading }}
                         centered
                     >
                         <p>Bạn có chắc chắn muốn xóa sản phẩm "{product?.name}" không? Hành động này không thể hoàn tác.</p>

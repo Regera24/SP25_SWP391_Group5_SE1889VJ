@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, InputNumber, Button, message, Select } from 'antd';
+import { Form, Input, Button, message, Select } from 'antd';
 import API from '../../../Utils/API/API';
 import { getToken } from '../../../Utils/UserInfoUtils';
 
@@ -17,7 +17,6 @@ const UpdateZone = ({ zone, onClose, fetchZones }) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data.content);
         setProducts(data.content)
       })
       .catch((error) => {
@@ -71,7 +70,7 @@ const UpdateZone = ({ zone, onClose, fetchZones }) => {
       <Form.Item label="Sản phẩm" name="productID" rules={[{ required: true, message: <i>Vui lòng chọn sản phẩm!</i> }]}>
         <Select placeholder="Chọn sản phẩm">
           {products.map((product) => (
-            <Select.Option key={product.productID} value={product.productID}>
+            <Select.Option key={product.id} value={product.id}>
               {product.name}
             </Select.Option>
           ))}

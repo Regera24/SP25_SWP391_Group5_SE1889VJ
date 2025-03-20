@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  AppstoreOutlined,
   FileTextOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ShopOutlined,
-  TeamOutlined,
+  ProductOutlined,
+  OrderedListOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
 // import './style.css';
 import { Link, Outlet, useLocation, useParams, useNavigate } from 'react-router-dom';
-import CustomFooter from '../../Components/Footer'; 
+import CustomFooter from '../../Components/Footer';
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,13 +21,17 @@ const StoreLayout = () => {
   } = theme.useToken();
 
   const location = useLocation();
-  const storeID  = useParams();  // Lấy storeID từ URL
+  const storeID = useParams(); // Lấy storeID từ URL
 
   const selectedKey = location.pathname.startsWith(`/store/${storeID.id}/zone`)
-    ? '1'
+  ? '1'
+  : location.pathname.startsWith(`/store/${storeID.id}/productattribute`)
+    ? '4'
     : location.pathname.startsWith(`/store/${storeID.id}/product`)
       ? '2'
-      : '';
+      : location.pathname.startsWith(`/store/${storeID.id}/category`)
+        ? '3'
+        : '';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -50,13 +54,23 @@ const StoreLayout = () => {
               {
                 key: '1',
                 icon: <ShopOutlined />,
-                label: <Link to={`/store/${storeID.id}/zone`}>Zone</Link>,
+                label: <Link to={`/store/${storeID.id}/zone`} style={{ textDecoration: 'none' }}>Zone</Link>,
               },
               {
                 key: '2',
-                icon: <AppstoreOutlined />,
-                label: <Link to={`/store/${storeID.id}/product`}>Product</Link>,
-              }
+                icon: <OrderedListOutlined />,
+                label: <Link to={`/store/${storeID.id}/product`} style={{ textDecoration: 'none' }}>Product</Link>,
+              },
+              {
+                key: '3',
+                icon: <ProductOutlined />,
+                label: <Link to={`/store/${storeID.id}/category`} style={{ textDecoration: 'none' }}>Category</Link>,
+              },
+              {
+                key: '4',
+                icon: <FileTextOutlined />,
+                label: <Link to={`/store/${storeID.id}/productattribute`} style={{ textDecoration: 'none' }}>Product Attribute</Link>,
+              },
             ]}
           />
         </Sider>

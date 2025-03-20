@@ -1,7 +1,6 @@
 package org.group5.swp391.converter;
 
 import lombok.RequiredArgsConstructor;
-import org.group5.swp391.dto.store_owner.all_product.StoreInfoIdAndNameDTO;
 import org.group5.swp391.dto.store_owner.all_store.StoreInfoDTO;
 import org.group5.swp391.entity.Store;
 import org.group5.swp391.repository.InvoiceRepository;
@@ -16,11 +15,14 @@ public class StoreConverter {
 
     public StoreInfoDTO toStoreDTO(Store store){
         StoreInfoDTO dto = modelMapper.map(store, StoreInfoDTO.class);
-        dto.setStoreID(store.getId());
+        dto.setId(store.getId());
         return dto;
     }
 
-    public StoreInfoIdAndNameDTO toStoreInfoIdAndNameDTO(Store store){
-        return modelMapper.map(store, StoreInfoIdAndNameDTO.class);
+    public StoreInfoDTO toStoreInfoIdAndNameDTO(Store store){
+        StoreInfoDTO dto = new StoreInfoDTO();
+        dto.setId(store.getId());
+        dto.setName(store.getStoreName());
+        return dto;
     }
 }

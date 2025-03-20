@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { message, Input, Spin, Pagination } from 'antd'; // Import Pagination từ Ant Design
-import StoreCard from '../../../Components/StoreOwner/StoreCard'; // Import ProductCard
+import { message, Input, Spin, Pagination } from 'antd';
+import StoreCard from '../../../Components/StoreOwner/StoreCard'; 
 import qs from 'qs';
 import './style.scss';
 import { getToken } from '../../../Utils/UserInfoUtils';
@@ -35,6 +35,7 @@ const Store = () => {
         try {
             const queryParams = `?${getStoreParams()}`;
             const response = await getDataWithToken(API.STORE_OWNER.GET_STORE + queryParams, token);
+console.log(response);
 
             setData(response.content);
             setPagination((prev) => ({
@@ -61,8 +62,6 @@ const Store = () => {
 
         const newTimeoutId = setTimeout(() => {
             setSearchValue(value);
-
-            // Reset về trang đầu tiên khi tìm kiếm
             setPagination((prev) => ({
                 ...prev,
                 current: 1,
@@ -73,7 +72,6 @@ const Store = () => {
     };
 
     const handlePaginationChange = (page, pageSize) => {
-        // Cập nhật thông tin phân trang (trang hiện tại & số item/trang)
         setPagination((prev) => ({
             ...prev,
             current: page,
@@ -94,16 +92,15 @@ const Store = () => {
                 <div className="product-card-container">
                     {data && data.map((store) => (
                         <StoreCard
-                            key={store.storeID} // Sử dụng storeID làm key
-                            urlStore={`/store/${store.storeID}/zone`} // Đường dẫn
-                            storeName={store.storeName} // Tên cửa hàng
-                            storeStatus={store.status === 'ACTIVE' ? 'Active' : 'Inactive'} // Trạng thái
-                            urlImg={store.imageUrl || 'https://via.placeholder.com/150'} // Ảnh mặc định nếu không có ảnh
+                            key={store.id} 
+                            urlStore={`/store/${store.storeID}/zone`}
+                            storeName={store.name} 
+                            storeStatus={store.status === 'ACTIVE' ? 'Active' : 'Inactive'} 
+                            urlImg={store.imageUrl || 'https://via.placeholder.com/150'}
                         />
                     ))}
                 </div>
             </Spin>
-            {/* Ant Design Pagination */}
             <div className="pagination-container">
                 <Pagination
                     current={pagination.current} 

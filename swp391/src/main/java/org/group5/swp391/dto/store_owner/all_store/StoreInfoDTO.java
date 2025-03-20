@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class StoreInfoDTO {
-    private String storeID;
-    private String storeName;
+    private String id;
+    private String name;
     private String address;
     private String hotline;
     private String description;

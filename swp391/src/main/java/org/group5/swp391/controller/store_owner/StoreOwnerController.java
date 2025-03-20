@@ -86,7 +86,7 @@ public class StoreOwnerController {
     }
 
     @GetMapping("/all/stores")
-    public List<StoreInfoIdAndNameDTO> getAllStores() {
+    public List<StoreInfoDTO> getAllStores() {
         try {
             return storeService.getStoresInfoIdAndName();
         } catch (Exception e) {

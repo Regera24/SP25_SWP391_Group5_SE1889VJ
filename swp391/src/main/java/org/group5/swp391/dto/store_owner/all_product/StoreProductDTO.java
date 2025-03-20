@@ -2,6 +2,7 @@ package org.group5.swp391.dto.store_owner.all_product;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.group5.swp391.dto.store_owner.all_store.StoreInfoDTO;
 
 @Getter
 @Setter
@@ -14,6 +15,6 @@ public class StoreProductDTO {
     double price;
     String information;
     StoreCategoryIdAndNameDTO category;
-    StoreInfoIdAndNameDTO store;
+    StoreInfoDTO store;
     Long quantity;
 }

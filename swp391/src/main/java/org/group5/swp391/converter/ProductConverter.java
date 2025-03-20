@@ -13,10 +13,11 @@ import org.group5.swp391.dto.store_owner.all_product.StoreProductDTO;
 import org.group5.swp391.dto.store_owner.all_product.StoreProductDetailDTO;
 import org.group5.swp391.dto.store_owner.store_detail.StoreDetailProductDTO;
 import org.group5.swp391.entity.Product;
+import org.group5.swp391.repository.CategoryRepository;
+import org.group5.swp391.repository.ProductAttributeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,8 @@ public class ProductConverter {
     private final ZoneConverter zoneConverter;
     private final CategoryConverter categoryConverter;
     private final StoreConverter storeConverter;
+    private final CategoryRepository categoryRepository;
+    private final ProductAttributeRepository productAttributeRepository;
 
     public CustomerProductDTO toCustomerProductDTO(Product product) {
         CustomerProductDTO customerProductDTO = modelMapper.map(product, CustomerProductDTO.class);
@@ -105,9 +108,30 @@ public class ProductConverter {
     public StoreDetailProductDTO toStoreDetailProductDTO(Product product){
         StoreDetailProductDTO storeDetailProductDTO = modelMapper.map(product, StoreDetailProductDTO.class);
         storeDetailProductDTO.setQuantity(product.getQuantity());
-        storeDetailProductDTO.setStoreDetailCategoryDTO(categoryConverter.toStoreDetailCategoryDTO(product.getCategory()));
+        storeDetailProductDTO.setCategoryID(product.getCategory().getId());
         storeDetailProductDTO.setProductImage(product.getProductImage());
+        storeDetailProductDTO.setStoreDetailProductAttributeDTOList(product.getProductAttributes()
+                .stream().map(productAttributeConverter::toStoreDetailProductAttributeDTO).collect(Collectors.toList()));
+        storeDetailProductDTO.setStoreDetailZoneDTOList(product.getZones()
+                .stream().map(zoneConverter::toStoreZoneDTO).collect(Collectors.toList()));
         return storeDetailProductDTO;
+    }
+
+    public Product toProduct(StoreDetailProductDTO storeDetailProductDTO){
+        Product product = new Product();
+        product.setQuantity(storeDetailProductDTO.getQuantity());
+        product.setCategory(categoryRepository.findById(storeDetailProductDTO.getCategoryID()).orElse(null));
+        product.setProductImage(storeDetailProductDTO.getProductImage());
+        product.setInformation(storeDetailProductDTO.getInformation());
+        product.setPrice(storeDetailProductDTO.getPrice());
+        product.setName(storeDetailProductDTO.getName());
+        if(storeDetailProductDTO.getStoreDetailZoneDTOList() != null) {
+            product.setZones(storeDetailProductDTO.getStoreDetailZoneDTOList().stream().map(zoneConverter::toZone).collect(Collectors.toList()));
+        }
+        if(storeDetailProductDTO.getStoreDetailProductAttributeDTOList() != null) {
+            product.setProductAttributes(storeDetailProductDTO.getStoreDetailProductAttributeDTOList().stream().map(productAttributeConverter::toProductAttribute).collect(Collectors.toList()));
+        }
+        return product;
     }
 
 }

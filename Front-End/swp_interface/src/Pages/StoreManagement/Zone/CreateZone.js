@@ -65,7 +65,7 @@ const CreateZone = ({ onClose, storeID, fetchZones }) => {
       <Form.Item label="Sản phẩm" name="productID" rules={[{ required: true, message: <i>Vui lòng chọn sản phẩm!</i> }]}>
         <Select placeholder="Chọn sản phẩm">
           {products.map((product) => (
-            <Select.Option key={product.productID} value={product.productID}>
+            <Select.Option key={product.id} value={product.id}>
               {product.name}
             </Select.Option>
           ))}

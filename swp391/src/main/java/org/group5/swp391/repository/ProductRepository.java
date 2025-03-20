@@ -65,8 +65,11 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             """)
     Optional<Product> findProductForUser(@Param("username") String username, @Param("productId") String productId);
 
-    @Query("SELECT p FROM Product p WHERE p.store.id = :storeID")
+    @Query("SELECT p FROM Product p WHERE p.store.id LIKE %:storeID%")
     List<Product> findProductsByStoreID(String storeID, Pageable pageable);
-    @Query("SELECT p FROM Product p WHERE p.store.id = :storeID AND (p.name LIKE %:search% OR p.information LIKE %:search%)")
+    @Query("SELECT p FROM Product p WHERE p.store.id LIKE %:storeID% AND (p.name LIKE %:search% OR p.information LIKE %:search%)")
     List<Product> findProductsByInformationAndNameContainingIgnoreCase(String search, String storeID, Pageable pageable);
+
+    long countByStore_Id(String storeID);
+    long countByInformationAndNameContainingIgnoreCase(String search, String storeID);
 }

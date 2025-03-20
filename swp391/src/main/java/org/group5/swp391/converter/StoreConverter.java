@@ -23,4 +23,5 @@ public class StoreConverter {
     public StoreInfoIdAndNameDTO toStoreInfoIdAndNameDTO(Store store){
         return modelMapper.map(store, StoreInfoIdAndNameDTO.class);
     }
+
 }

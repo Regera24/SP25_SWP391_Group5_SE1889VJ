@@ -38,7 +38,9 @@ import ChangePassword from "./Pages/Account/ChangePasswordAcc";
 import Zone from "./Pages/StoreManagement/Zone/Zone.js";
 import StoreLayout from "./Components/StoreLayout/storelayout.js";
 import StoreProduct from "./Pages/StoreManagement/Product/Product.js";
-import { WebSocketProvider } from "./Utils/Websocket/WebsocketContextProvider.js"
+import StoreDetailCategory from "./Pages/StoreManagement/Category/Category.js";
+import StoreDetailProductAttribute from "./Pages/StoreManagement/ProductAttribute/ProductAttribute.js";
+import { WebSocketProvider } from "./Utils/Websocket/WebsocketContextProvider.js";
 
 function App() {
   return (
@@ -100,6 +102,8 @@ function App() {
               <Route path="/store/:id" element={<StoreLayout />}>  
                 <Route path="zone" element={<Zone />}></Route>
                 <Route path="product" element={<StoreProduct />}></Route>
+                <Route path="category" element={<StoreDetailCategory />}></Route>
+                <Route path="productattribute" element={<StoreDetailProductAttribute />}></Route>
               </Route>
             </Route>
             <Route path="/account-info" element={<AccountInfo />} />

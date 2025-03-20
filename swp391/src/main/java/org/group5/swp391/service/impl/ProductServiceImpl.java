@@ -3,6 +3,7 @@ package org.group5.swp391.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.group5.swp391.converter.ProductAttributeConverter;
 import org.group5.swp391.converter.ProductConverter;
 import org.group5.swp391.dto.customer_requirement.CustomerProductDTO;
 import org.group5.swp391.dto.employee.EmployeeProductDTO;
@@ -54,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductAttributeRepository productAttributeRepository;
     private final CloudinaryService cloudinaryService;
     private final ZoneRepository zoneRepository;
+    private final ProductAttributeConverter productAttributeConverter;
 
     // Chien
     @Override
@@ -230,14 +232,17 @@ public class ProductServiceImpl implements ProductService {
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         List<StoreDetailProductDTO> productPages;
+        long total;
         if (search == null || search.isEmpty()) {
             List<Product> products = productRepository.findProductsByStoreID(storeID, pageable);
             productPages = products.stream().map(productConverter::toStoreDetailProductDTO).collect(Collectors.toList());
+            total = productRepository.countByStore_Id(storeID);
         } else {
             List<Product> filteredProducts = productRepository.findProductsByInformationAndNameContainingIgnoreCase(search, storeID, pageable);
             productPages = filteredProducts.stream().map(productConverter::toStoreDetailProductDTO).collect(Collectors.toList());
+            total = productRepository.countByInformationAndNameContainingIgnoreCase(search, storeID); // Đếm tổng số sản phẩm theo điều kiện search
         }
-        return new PageImpl<>(productPages, pageable, (productPages.size() + 1));
+        return new PageImpl<>(productPages, pageable, total);
     }
 
     @Override
@@ -258,6 +263,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void addProduct(String storeID, StoreDetailProductDTO storeDetailProductDTO) throws Exception {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -278,7 +284,8 @@ public class ProductServiceImpl implements ProductService {
 
             Product newProduct = new Product();
 
-            Category cateExisting = categoryRepository.findCategoryById(storeDetailProductDTO.getStoreDetailCategoryDTO().getId());
+            Category cateExisting = categoryRepository
+                    .findCategoryById(storeDetailProductDTO.getCategoryID());
             if (cateExisting == null) {
                 throw new Exception("Category does not exist");
             }
@@ -293,11 +300,92 @@ public class ProductServiceImpl implements ProductService {
             newProduct.setStore(storeExisting);
             newProduct.setQuantity(storeDetailProductDTO.getQuantity());
             newProduct.setProductImage(storeDetailProductDTO.getProductImage());
-            System.out.println(newProduct.toString());
+
+            if(storeDetailProductDTO.getStoreDetailProductAttributeDTOList() != null) {
+                List<ProductAttribute> attributes = storeDetailProductDTO.getStoreDetailProductAttributeDTOList().stream()
+                        .map(dto -> {
+                            try {
+                                return productAttributeRepository.findById(dto.getId())
+                                        .orElseThrow(() -> new Exception("ProductAttribute not found for ID: " + dto.getId()));
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .collect(Collectors.toList());
+
+                newProduct.setProductAttributes(attributes);
+            }
+            if(storeDetailProductDTO.getStoreDetailZoneDTOList() != null) {
+                List<Zone> zones = storeDetailProductDTO.getStoreDetailZoneDTOList().stream()
+                        .map(dto -> {
+                            try {
+                                Zone zone = zoneRepository.findById(dto.getId())
+                                        .orElseThrow(() -> new Exception("Zone not found for ID: " + dto.getId()));
+                                return new Zone(zone.getName(),
+                                        zone.getLocation(),
+                                        productConverter.toProduct(storeDetailProductDTO),
+                                        storeRepository.findById(storeID).orElseThrow(() -> new Exception("Không tìm thấy store")));
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).collect(Collectors.toList());
+                newProduct.setZones(zones);
+            }
             productRepository.save(newProduct);
         } catch (Exception e) {
             throw new Exception("Failed to save product: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void updateProduct(String storeID, String productID, StoreDetailProductDTO storeDetailProductDTO) throws Exception {
+        Product updatingProduct = productRepository
+                .findById(productID)
+                .orElseThrow(() -> new Exception("Product not found for ID: " + storeDetailProductDTO.getId()));
+        updatingProduct.setName(storeDetailProductDTO.getName());
+        updatingProduct.setPrice(storeDetailProductDTO.getPrice());
+        updatingProduct.setInformation(storeDetailProductDTO.getInformation());
+        updatingProduct.setQuantity(storeDetailProductDTO.getQuantity());
+        updatingProduct.setProductImage(storeDetailProductDTO.getProductImage());
+        Category cateExisting = categoryRepository
+                .findById(storeDetailProductDTO.getCategoryID())
+                .orElseThrow(() -> new Exception("không tìm thấy category"));
+        if (cateExisting == null) {
+            throw new Exception("Category does not exist");
+        }
+        updatingProduct.setCategory(cateExisting);
+
+        if(storeDetailProductDTO.getStoreDetailProductAttributeDTOList() != null) {
+            List<ProductAttribute> attributes = storeDetailProductDTO.getStoreDetailProductAttributeDTOList().stream()
+                    .map(dto -> {
+                        try {
+                            return productAttributeRepository.findById(dto.getId())
+                                    .orElseThrow(() -> new Exception("ProductAttribute not found for ID: " + dto.getId()));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            updatingProduct.setProductAttributes(attributes);
+        }
+        if(storeDetailProductDTO.getStoreDetailZoneDTOList() != null) {
+            List<Zone> zones = storeDetailProductDTO.getStoreDetailZoneDTOList().stream()
+                    .map(dto -> {
+                        try {
+                            Zone zone = zoneRepository.findById(dto.getId())
+                                    .orElseThrow(() -> new Exception("Zone not found for ID: " + dto.getId()));
+                            return new Zone(zone.getName(),
+                                    zone.getLocation(),
+                                    productRepository.findById(productID).orElseThrow(() -> new Exception("không tìm thấy product")),
+                                    storeRepository.findById(storeID).orElseThrow(() -> new Exception("Không tìm thấy store")));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).collect(Collectors.toList());
+            updatingProduct.setZones(zones);
+        }
+        productRepository.save(updatingProduct);
     }
 
     //hàm cắt chuỗi in hoa chữ đầu cho mọi người

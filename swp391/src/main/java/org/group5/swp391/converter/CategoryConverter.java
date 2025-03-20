@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CategoryConverter {
     private final ModelMapper modelMapper;
+    private final StoreConverter storeConverter;
 
     public CustomerCategoryDTO toCategoryDTO(Category category) {
         CustomerCategoryDTO dto =  modelMapper.map(category, CustomerCategoryDTO.class);
@@ -27,6 +28,7 @@ public class CategoryConverter {
 
     public StoreDetailCategoryDTO toStoreDetailCategoryDTO(Category category) {
         StoreDetailCategoryDTO dto =  modelMapper.map(category, StoreDetailCategoryDTO.class);
+//        dto.setStoreDetailRequestDTO(storeConverter.toStoreDetailRequestDTO(category.getStore()));\
         dto.setStoreID(category.getStore().getId());
         return dto;
     }
